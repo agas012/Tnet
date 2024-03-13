@@ -1,0 +1,27 @@
+.custom-div {
+    border: 2px solid black;  Black border 
+    background-color: blue;  Blue background 
+    padding: 10px;  Some padding 
+    margin: 10px;  Some margin 
+    color: white;  White text 
+}
+
+.custom-input {
+    width: 400px;  Adjust the width as needed 
+    border: 2px solid #ced4da;
+    padding: .375rem .75rem;
+    border-radius: .25rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.custom-label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;  Ensures the label appears above the input 
+}
+
+.custom-input-date {
+    width: 30px;
+    border-color: #929292;
+}

@@ -1,0 +1,72 @@
+﻿@page "/patients"
+@using Tnet.Services
+@inject IPatientService PatientService
+@inject NavigationManager NavigationManager
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+
+<h3>Lista de pacientes</h3>
+
+@if(patients ==null)
+{
+    <span>Sin datos...</span>
+}
+else if(patients.Count == 0)
+{
+    <span>No hay pacientes...</span>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de nacimiento</th>
+                <th>Genero</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in patients)
+            {
+                <tr>
+                    <td>@patient.Name</td>
+                    <td>@patient.SurnameP</td>
+                    <td>@patient.SurnameM</td>
+                    <td>@patient.generoSeleccionado</td>
+                    <td>
+                        <button @onclick="(() => ShowPatient(patient.Id))" class="btn btn-secondary">Editar</button>
+                    </td>
+                    <td>
+                        <button @onclick="(() => DeletePatient(patient.Id))" class="btn btn-danger">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<button @onclick="CreatePatient" class="btn btn-primary">Agregar Paciente</button>
+
+@code {
+    List<Entities.Patient>? patients =null;
+    protected override async Task OnInitializedAsync()
+    {
+        patients = await PatientService.GetPatients();
+    }
+
+    void CreatePatient()
+    {
+        NavigationManager.NavigateTo("/editpatient");
+    }
+    void ShowPatient(int id)
+    {
+        NavigationManager.NavigateTo($"/editpatient/{id}");
+    }
+    async void DeletePatient(int id)
+    {
+        patients.RemoveAll(p => p.Id == id);
+        await PatientService.DeletePatient(id);
+    }
+}
