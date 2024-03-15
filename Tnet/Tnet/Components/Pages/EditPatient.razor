@@ -1,6 +1,7 @@
 ﻿@page "/editpatient"
 @page "/editpatient/{id:int}"
 @using Tnet.Services
+@inject IJSRuntime JSRuntime
 @inject IPatientService PatientService
 @inject NavigationManager NavigationManager
 @attribute [StreamRendering(false)]
@@ -83,1885 +84,1901 @@ else
 }
 
 <EditForm Model="@patient" OnSubmit="HandleSubmit" FormName="editPatient">
-    <div class="custom-div">
-        <label for="cuestionario" class="custom-label">No. de cuestionario:</label>
-        <InputNumber id="cuestionario" class="custom-inpu-datet" @bind-Value="patient.numcuestionario" />
-    </div>
+    @if (currentSection == 0)
+    {
+        <div class="custom-div">
+            <label for="cuestionario" class="custom-label">No. de cuestionario:</label>
+            <InputNumber id="cuestionario" class="custom-inpu-datet" @bind-Value="patient.numcuestionario" />
+        </div>
 
-    <div class="custom-div">
-        <label for="fechaa" class="custom-label">Fecha aplicación (día/mes/año)</label>
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionDia" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionMes" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionAnio" />
-    </div>
+        <div class="custom-div">
+            <label for="fechaa" class="custom-label">Fecha aplicación (día/mes/año)</label>
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionDia" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionMes" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.fechadeaplicacionAnio" />
+        </div>
 
-    <div class="custom-div">
-        <label for="nameEnc" class="custom-label">Nombre encuestador :</label>
-        <InputText id="nameEnc" class="custom-input" @bind-Value="patient.NameEnc" placeholder="Nombre" />
-    </div>
+        <div class="custom-div">
+            <label for="nameEnc" class="custom-label">Nombre encuestador :</label>
+            <InputText id="nameEnc" class="custom-input" @bind-Value="patient.NameEnc" placeholder="Nombre" />
+        </div>
 
-    <div class="custom-div">
-        <label for="name" class="custom-label">Nombre:</label>
-        <InputText id="name" class="custom-input" @bind-Value="patient.Name" placeholder="Nombre" />
-    </div>
-    <div class="custom-div">
-        <label for="apellodop" class="custom-label">Apellido Paterno</label>
-        <InputText id="apellodop" class="custom-input" @bind-Value="patient.SurnameP" />
-    </div>
-    <div class="custom-div">
-        <label for="apellodom" class="custom-label">Apellido Materno</label>
-        <InputText id="apellodom" class="custom-input" @bind-Value="patient.SurnameM" />
-    </div>
+        <div class="custom-div">
+            <label for="name" class="custom-label">Nombre:</label>
+            <InputText id="name" class="custom-input" @bind-Value="patient.Name" placeholder="Nombre" />
+        </div>
+        <div class="custom-div">
+            <label for="apellodop" class="custom-label">Apellido Paterno</label>
+            <InputText id="apellodop" class="custom-input" @bind-Value="patient.SurnameP" />
+        </div>
+        <div class="custom-div">
+            <label for="apellodom" class="custom-label">Apellido Materno</label>
+            <InputText id="apellodom" class="custom-input" @bind-Value="patient.SurnameM" />
+        </div>
 
-    <div class="custom-div">
-        <label for="ecu" class="custom-label">ECU</label>
-        <InputText id="ecu" class="custom-input" @bind-Value="patient.ECUNumber" />
-    </div>
-    <div class="custom-div">
-        <label for="tel" class="custom-label">Teléfonos</label>
-        <InputText id="tel" class="custom-input" @bind-Value="patient.Phone1" />
-        <InputText id="tel" class="custom-input" @bind-Value="patient.Phone2" />
-        <InputText id="tel" class="custom-input" @bind-Value="patient.Phone3" />
-    </div>
-    <div class="custom-div">
-        <label for="correo" class="custom-label">Correos electrónico</label>
-        <InputText id="correo" class="custom-input" @bind-Value="patient.Email1" />
-        <InputText id="correo" class="custom-input" @bind-Value="patient.Email2" />
-    </div>
-    <div class="custom-div">
-        <label for="fechan" class="custom-label">Fecha de nacimeinto (día/mes/año)</label>
-        <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoDia" />
-        <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoMes" />
-        <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoAnio" />
-    </div>
+        <div class="custom-div">
+            <label for="ecu" class="custom-label">ECU</label>
+            <InputText id="ecu" class="custom-input" @bind-Value="patient.ECUNumber" />
+        </div>
+        <div class="custom-div">
+            <label for="tel" class="custom-label">Teléfonos</label>
+            <InputText id="tel" class="custom-input" @bind-Value="patient.Phone1" />
+            <InputText id="tel" class="custom-input" @bind-Value="patient.Phone2" />
+            <InputText id="tel" class="custom-input" @bind-Value="patient.Phone3" />
+        </div>
+        <div class="custom-div">
+            <label for="correo" class="custom-label">Correos electrónico</label>
+            <InputText id="correo" class="custom-input" @bind-Value="patient.Email1" />
+            <InputText id="correo" class="custom-input" @bind-Value="patient.Email2" />
+        </div>
+        <div class="custom-div">
+            <label for="fechan" class="custom-label">Fecha de nacimeinto (día/mes/año)</label>
+            <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoDia" />
+            <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoMes" />
+            <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoAnio" />
+        </div>
     
-    <div class="custom-div">
-        <label for="genero" class="custom-label">¿Con cuál género se identifica? </label>
-        <InputRadioGroup @bind-Value="patient.generoSeleccionado">
-            <ul>
-            @foreach (var element in patient.Generos)
-            {
-                    <li><InputRadio Value="@element" id="genero" class="custom-list" /> @element</li>
-            }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    @if (patient.generoSeleccionado == "Otro")
-    {
         <div class="custom-div">
-            <label for="generootro" class="custom-label">Especifique</label>
-            <InputText id="generootro" class="custom-input" @bind-Value="patient.generoOtro" />
-        </div>
-    }
-
-    <div class="custom-div">
-        <label for="estadocivil" class="custom-label">¿Estado civil actual? </label>
-        <InputRadioGroup @bind-Value="patient.estadocivilSeleccionado">
-            <ul>
-            @foreach (var element in patient.EstadosCiviles)
-            {
-                    <li><InputRadio Value="@element" id="estadocivil" class="custom-list" /> @element</li>
-            }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="estudio" class="custom-label">¿Cuántos años ha estudiado?</label>
-        <InputNumber id="estudio" class="custom-input-date" @bind-Value="patient.aniosdeestudio" />
-    </div>
-
-    <div class="custom-div">
-        <label for="religion" class="custom-label">¿Profesa alguna religión?  </label>
-        <InputRadioGroup @bind-Value="patient.religionSeleccionada">
-            <ul>
-                @foreach (var element in patient.Religiones)
+            <label for="genero" class="custom-label">¿Con cuál género se identifica? </label>
+            <InputRadioGroup @bind-Value="patient.generoSeleccionado">
+                <ul>
+                @foreach (var element in patient.Generos)
                 {
-                    <li><InputRadio Value="@element" id="religion" class="custom-list" /> @element</li>
+                        <li><InputRadio Value="@element" id="genero" class="custom-list" /> @element</li>
                 }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    @if (patient.religionSeleccionada == "Otra")
+                </ul>
+            </InputRadioGroup>
+        </div>
+        @if (patient.generoSeleccionado == "Otro")
+        {
+            <div class="custom-div">
+                <label for="generootro" class="custom-label">Especifique</label>
+                <InputText id="generootro" class="custom-input" @bind-Value="patient.generoOtro" />
+            </div>
+        }
+    }
+    else if (currentSection == 1)
     {
         <div class="custom-div">
-            <label for="religionotra" class="custom-label">¿Cuál?</label>
-            <InputText id="religionotra" class="custom-input" @bind-Value="patient.religionOtra" />
-        </div>
-    }
-
-    <div class="custom-div">
-        <label for="HablalenguaIndigena" class="custom-label">¿Habla alguna lengua indígena?:</label>
-        <select @bind="patient.HablalenguaIndigena">
-            <option value="true">Si</option>
-            <option value="false">No</option>
-        </select>
-    </div>
-    @if (patient.HablalenguaIndigena == true)
-    {
-        <div class="custom-div">
-            <label for="lenguaIndigenaCual" class="custom-label">¿Cuál?</label>
-            <InputText id="lenguaIndigenaCual" class="custom-input" @bind-Value="patient.lenguaIndigenaCual" />
-        </div>
-    }
-
-    <div class="custom-div">
-        <label for="PertenecegrupoEtnico" class="custom-label">¿Habla alguna lengua indígena?:</label>
-        <select @bind="patient.PertenecegrupoEtnico">
-            <option value="true">Si</option>
-            <option value="false">No</option>
-        </select>
-    </div>
-    @if (patient.PertenecegrupoEtnico == true)
-    {
-        <div class="custom-div">
-            <label for="grupoEtnicoCual" class="custom-label">¿Cuál?</label>
-            <InputText id="grupoEtnicoCual" class="custom-input" @bind-Value="patient.grupoEtnicoCual" />
-        </div>
-    }
-
-    <div class="custom-div">
-        <label for="ocupacionSeleccionada" class="custom-label">¿A qué se dedica? </label>
-        <InputRadioGroup @bind-Value="patient.ocupacionSeleccionada">
-            <ul>
-                @foreach (var element in patient.Ocupaciones)
+            <label for="estadocivil" class="custom-label">¿Estado civil actual? </label>
+            <InputRadioGroup @bind-Value="patient.estadocivilSeleccionado">
+                <ul>
+                @foreach (var element in patient.EstadosCiviles)
                 {
-                    <li><InputRadio Value="@element" id="ocupacionSeleccionada" class="custom-list" /> @element</li>
+                        <li><InputRadio Value="@element" id="estadocivil" class="custom-list" /> @element</li>
                 }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    @if (patient.ocupacionSeleccionada == "Otro")
-    {
+                </ul>
+            </InputRadioGroup>
+        </div>
+
         <div class="custom-div">
+            <label for="estudio" class="custom-label">¿Cuántos años ha estudiado?</label>
+            <InputNumber id="estudio" class="custom-input-date" @bind-Value="patient.aniosdeestudio" />
+        </div>
+
+        <div class="custom-div">
+            <label for="religion" class="custom-label">¿Profesa alguna religión?  </label>
+            <InputRadioGroup @bind-Value="patient.religionSeleccionada">
+                <ul>
+                    @foreach (var element in patient.Religiones)
+                    {
+                        <li><InputRadio Value="@element" id="religion" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+        @if (patient.religionSeleccionada == "Otra")
+        {
+            <div class="custom-div">
+                <label for="religionotra" class="custom-label">¿Cuál?</label>
+                <InputText id="religionotra" class="custom-input" @bind-Value="patient.religionOtra" />
+            </div>
+        }
+
+        <div class="custom-div">
+            <label for="HablalenguaIndigena" class="custom-label">¿Habla alguna lengua indígena?:</label>
+            <InputRadioGroup @bind-Value="patient.HablalenguaIndigena">
+                <InputRadio Value="true" /> Si
+                <InputRadio Value="false" /> No
+            </InputRadioGroup>
+        </div>
+        @if (patient.HablalenguaIndigena == true)
+        {
+            <div class="custom-div">
+                <label for="lenguaIndigenaCual" class="custom-label">¿Cuál?</label>
+                <InputText id="lenguaIndigenaCual" class="custom-input" @bind-Value="patient.lenguaIndigenaCual" />
+            </div>
+        }
+
+        <div class="custom-div">
+            <label for="PertenecegrupoEtnico" class="custom-label">¿Pertenece a algún grupo étnico?:</label>
+            <InputRadioGroup @bind-Value="patient.PertenecegrupoEtnico">
+                <InputRadio Value="true" /> Si
+                <InputRadio Value="false" /> No
+            </InputRadioGroup>
+        </div>
+        @if (patient.PertenecegrupoEtnico == true)
+        {
+            <div class="custom-div">
+                <label for="grupoEtnicoCual" class="custom-label">¿Cuál?</label>
+                <InputText id="grupoEtnicoCual" class="custom-input" @bind-Value="patient.grupoEtnicoCual" />
+            </div>
+        }
+
+        <div class="custom-div">
+            <label for="ocupacionSeleccionada" class="custom-label">¿A qué se dedica? </label>
+            <InputRadioGroup @bind-Value="patient.ocupacionSeleccionada">
+                <ul>
+                    @foreach (var element in patient.Ocupaciones)
+                    {
+                        <li><InputRadio Value="@element" id="ocupacionSeleccionada" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+
             <label for="ocupacionOtra" class="custom-label">Especifique</label>
             <InputText id="ocupacionOtra" class="custom-input" @bind-Value="patient.ocupacionOtra" />
         </div>
+
+        <div class="custom-div">
+            <p style="font-weight:bold">¿En dónde nació?</p>
+            <label for="Alcaldía" class="custom-label">Alcaldía/loc</label>
+            <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeNacimientoAlcaldia" />
+            <label for="Alcaldía" class="custom-label">Municipio</label>
+            <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeNacimientoMunicipio" />
+            <label for="Estado" class="custom-label">Estado</label>
+            <InputText id="Estado" class="custom-input" @bind-Value="patient.lugardeNacimientoEstado" />
+            <label for="Pais" class="custom-label">País</label>
+            <InputText id="Pais" class="custom-input" @bind-Value="patient.lugardeNacimientoPais" />
+        </div>
+        <div class="custom-div">
+            <p style="font-weight:bold">¿En dónde vive actualmente?</p>
+            <label for="Alcaldía" class="custom-label">Alcaldía/loc</label>
+            <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeResidenciaAlcaldia" />
+            <label for="Alcaldía" class="custom-label">Municipio</label>
+            <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeResidenciaMunicipio" />
+            <label for="Estado" class="custom-label">Estado</label>
+            <InputText id="Estado" class="custom-input" @bind-Value="patient.lugardeResidenciaEstado" />
+        </div>
     }
-    <div class="custom-div">
-        <p style="font-weight:bold">¿En dónde nació?</p>
-        <label for="Alcaldía" class="custom-label">Alcaldía/loc</label>
-        <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeNacimientoAlcaldia" />
-        <label for="Alcaldía" class="custom-label">Municipio</label>
-        <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeNacimientoMunicipio" />
-        <label for="Estado" class="custom-label">Estado</label>
-        <InputText id="Estado" class="custom-input" @bind-Value="patient.lugardeNacimientoEstado" />
-        <label for="Pais" class="custom-label">País</label>
-        <InputText id="Pais" class="custom-input" @bind-Value="patient.lugardeNacimientoPais" />
-    </div>
-    <div class="custom-div">
-        <p style="font-weight:bold">¿En dónde vive actualmente?</p>
-        <label for="Alcaldía" class="custom-label">Alcaldía/loc</label>
-        <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeResidenciaAlcaldia" />
-        <label for="Alcaldía" class="custom-label">Municipio</label>
-        <InputText id="Alcaldía" class="custom-input" @bind-Value="patient.lugardeResidenciaMunicipio" />
-        <label for="Estado" class="custom-label">Estado</label>
-        <InputText id="Estado" class="custom-input" @bind-Value="patient.lugardeResidenciaEstado" />
-    </div>
+    else if (currentSection == 2)
+    {
+        <div class="custom-div">
+            <label for="vivecantidad" class="custom-label">Hoy ¿con cuántas personas vive?</label>
+            <InputNumber id="vivecantidad" class="custom-inpu-datet" @bind-Value="patient.personasEnCasa" />
+        </div>
+        <div class="custom-div">
+            <label for="personasAportanGastos" class="custom-label">De las personas que viven en casa ¿cuántas aportan para los gastos del hogar?</label>
+            <InputNumber id="personasAportanGastos" class="custom-inpu-datet" @bind-Value="patient.personasAportanGastos" />
+        </div>
 
-    <div class="custom-div">
-        <label for="vivecantidad" class="custom-label">Hoy ¿con cuántas personas vive?</label>
-        <InputNumber id="vivecantidad" class="custom-inpu-datet" @bind-Value="patient.personasEnCasa" />
-    </div>
-    <div class="custom-div">
-        <label for="personasAportanGastos" class="custom-label">De las personas que viven en casa ¿cuántas aportan para los gastos del hogar?</label>
-        <InputNumber id="personasAportanGastos" class="custom-inpu-datet" @bind-Value="patient.personasAportanGastos" />
-    </div>
-
-    <div class="custom-div">
-        <label for="proveedor" class="custom-label">¿Quién es el principal proveedor económico?</label>
-        <InputRadioGroup @bind-Value="patient.principalProveedorEconomico">
-            <ul>
-                @foreach (var element in patient.ProvedoresEconomicos)
-                {
-                    <li><InputRadio Value="@element" id="proveedor" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="jefehogar" class="custom-label">¿Quién cree usted que es jefe/jefa del hogar?</label>
-        <InputRadioGroup @bind-Value="patient.jefeJefaHogar">
-            <ul>
-                @foreach (var element in patient.JefesHogar)
-                {
-                    <li><InputRadio Value="@element" id="jefehogar" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="ingresos" class="custom-label">Estime el ingreso mensual del hogar:</label>
-        <InputRadioGroup @bind-Value="patient.ingresoMensualHogar">
-            <ul>
-                @foreach (var element in patient.IngresosMensuales)
-                {
-                    <li><InputRadio Value="@element" id="ingresos" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="casavive" class="custom-label">La casa donde vive es:</label>
-        <InputRadioGroup @bind-Value="patient.tipoDeCasa">
-            <ul>
-                @foreach (var element in patient.TiposDeCasa)
-                {
-                    <li><InputRadio Value="@element" id="casavive" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="transplaterec" class="custom-label">La casa donde vive es:</label>
-        <InputRadioGroup @bind-Value="patient.tipoDeTrasplante">
-            <ul>
-                @foreach (var element in patient.TiposDeTrasplante)
-                {
-                    <li><InputRadio Value="@element" id="transplaterec" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="fechatras" class="custom-label">¿En qué año se trasplantó? (día/mes/año)</label>
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.diaTrasplante" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.mesTrasplante" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.anioTrasplante" />
-    </div>
-
-    <div class="custom-div">
-        <label for="fechaa" class="custom-label">¿En qué año fue diagnosticado con su enfermedad?  (día/mes/año)</label>
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.diaDiagnostico" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.mesDiagnostico" />
-        <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.anioDiagnostico" />
-    </div>
-
-    <p style="font-weight:bold">ESCALA DE MEDICIÓN DE LA RESILIENCIA CON MEXICANOS RESI-M </p>
-    <p>
-        Instrucciones: A continuación, encontrará una serie de afirmaciones. Por favor indique con una X en el recuadro de la derecha, 
-        la respuesta que elija para cada una de las afirmaciones que se le presentan. No deje de contestar ninguna de ellas. 
-        Sus respuestas son confidenciales. Muchas gracias por su colaboración. 
-    </p>
-    <div class="custom-div">
-        @for (int i = 0; i < patient.ResilenciaQuestionsText.Count; i++)
-        {
-            int index = i; // Local copy for lambda capture
-            if (index >= 0 && index < patient.ResilenciaQuestions.Count)
-            {
-                <div class="m-2 p-2">
-                    <label>@patient.ResilenciaQuestionsText[index]</label>
-                    @foreach (var answer in patient.ResilenciaAnswers)
+        <div class="custom-div">
+            <label for="proveedor" class="custom-label">¿Quién es el principal proveedor económico?</label>
+            <InputRadioGroup @bind-Value="patient.principalProveedorEconomico">
+                <ul>
+                    @foreach (var element in patient.ProvedoresEconomicos)
                     {
-                        <div class="form-check">
-                            <InputRadioGroup @bind-Value="patient.ResilenciaQuestions[index].SelectedAnswer" class="form-check-input">
-                                <InputRadio Value="@answer" class="form-check-input" /> @answer
-                            </InputRadioGroup>
-                        </div>
+                        <li><InputRadio Value="@element" id="proveedor" class="custom-list" /> @element</li>
                     }
-                </div>
-            }
-        }
-    </div>
-    <div class="custom-div">
-        <p>SECCIONES DE AFRONTAMIENTO Y APOYO SOCIAL DEL CUESTIONARIO DE AFRONTAMIENTO Y APOYO SOCIAL PARA ENFERMEDADES CRÓNICAS</p>
-        <p> 
-            El siguiente instrumento tiene la finalidad de saber cómo se sienten los pacientes que han tenido un trasplante y cómo afrontan las situaciones a las que se enfrentan y los tipos de apoyo que perciben.  Pedimos su ayuda para que responda las preguntas que cordialmente le presentamos, la información que nos proporcione será completa y estrictamente anónima, siendo rigurosamente utilizada para fines académicos y de investigación.
-        </p>
-        <p>SECCIÓN ESTRATEGIAS DE AFRONTAMIENTO</p>
-        <p>Instrucciones: Se le leerán varias oraciones relacionadas con la forma como las personas afrontan los problemas de la vida.  Estas formas de afrontamiento no son buenas, ni malas, ni mejores, ni peores; dependen de las situaciones que se viven. En cada oración usted escogerá una de las 6 (seis) opciones que se le darán. Elija la que más se acomoda a su forma de ser y afrontar sus problemas. Las seis opciones son:... </p>
-    </div>
-    <div class="custom-div">
-        @for (int i = 0; i < patient.AfrontamientoQuestionsText.Count; i++)
-        {
-            int index = i; // Local copy for lambda capture
-            if (index >= 0 && index < patient.AfrontamientoQuestions.Count)
-            {
-                <div class="m-2 p-2">
-                    <label>@patient.AfrontamientoQuestionsText[index]</label>
-                    @foreach (var answer in patient.AfrontamientoAnswers)
+                </ul>
+            </InputRadioGroup>
+        </div>
+
+        <div class="custom-div">
+            <label for="jefehogar" class="custom-label">¿Quién cree usted que es jefe/jefa del hogar?</label>
+            <InputRadioGroup @bind-Value="patient.jefeJefaHogar">
+                <ul>
+                    @foreach (var element in patient.JefesHogar)
                     {
-                        <div class="form-check">
-                            <InputRadioGroup @bind-Value="patient.AfrontamientoQuestions[index].SelectedAnswer" class="form-check-input">
-                                <InputRadio Value="@answer" class="form-check-input" /> @answer
+                        <li><InputRadio Value="@element" id="jefehogar" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+
+        <div class="custom-div">
+            <label for="ingresos" class="custom-label">Estime el ingreso mensual del hogar:</label>
+            <InputRadioGroup @bind-Value="patient.ingresoMensualHogar">
+                <ul>
+                    @foreach (var element in patient.IngresosMensuales)
+                    {
+                        <li><InputRadio Value="@element" id="ingresos" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+
+        <div class="custom-div">
+            <label for="casavive" class="custom-label">La casa donde vive es:</label>
+            <InputRadioGroup @bind-Value="patient.tipoDeCasa">
+                <ul>
+                    @foreach (var element in patient.TiposDeCasa)
+                    {
+                        <li><InputRadio Value="@element" id="casavive" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+
+        <div class="custom-div">
+            <label for="transplaterec" class="custom-label">La casa donde vive es:</label>
+            <InputRadioGroup @bind-Value="patient.tipoDeTrasplante">
+                <ul>
+                    @foreach (var element in patient.TiposDeTrasplante)
+                    {
+                        <li><InputRadio Value="@element" id="transplaterec" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+
+        <div class="custom-div">
+            <label for="fechatras" class="custom-label">¿En qué año se trasplantó? (día/mes/año)</label>
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.diaTrasplante" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.mesTrasplante" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.anioTrasplante" />
+        </div>
+
+        <div class="custom-div">
+            <label for="fechaa" class="custom-label">¿En qué año fue diagnosticado con su enfermedad?  (día/mes/año)</label>
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.diaDiagnostico" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.mesDiagnostico" />
+            <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.anioDiagnostico" />
+        </div>
+    }
+    else if (currentSection == 3)
+    {
+        <p style="font-weight:bold">ESCALA DE MEDICIÓN DE LA RESILIENCIA CON MEXICANOS RESI-M </p>
+        <p>
+            Instrucciones: A continuación, encontrará una serie de afirmaciones. Por favor indique con una X en el recuadro de la derecha, 
+            la respuesta que elija para cada una de las afirmaciones que se le presentan. No deje de contestar ninguna de ellas. 
+            Sus respuestas son confidenciales. Muchas gracias por su colaboración. 
+        </p>
+        <div class="custom-div">
+            @for (int i = 0; i < patient.ResilenciaQuestionsText.Count; i++)
+            {
+                int index = i; // Local copy for lambda capture
+                if (index >= 0 && index < patient.ResilenciaQuestions.Count)
+                {
+                    <div class="m-2 p-2">
+                        <label>@patient.ResilenciaQuestionsText[index]</label>
+                        @foreach (var answer in patient.ResilenciaAnswers)
+                        {
+                            <div class="form-check">
+                                <InputRadioGroup @bind-Value="patient.ResilenciaQuestions[index].SelectedAnswer" class="form-check-input">
+                                    <InputRadio Value="@answer" class="form-check-input" /> @answer
                                 </InputRadioGroup>
-                        </div>
-                    }
-                </div>
+                            </div>
+                        }
+                    </div>
+                }
             }
-        }
-    </div>
-    <div class="custom-div">
-        <p>SECCIÓN APOYO SOCIAL</p>
-        <p>
-            Instrucciones: esta sección trata sobre el apoyo que le han dado otras personas en el momento del trasplante y hoy. Contiene preguntas abiertas y otras con varias opciones de respuesta que se le indicaran.  No hay respuestas correctas, ni incorrectas.
-        </p>
-        <p>
-            A.S.M. Pasado
-        </p>
-    </div>
-
-     <div class="custom-div">
-        <label for="s1" class="custom-label">1. Para su trasplante, ¿quién o quiénes le apoyaron económicamente?</label>
-        <InputText id="s1" class="custom-input" @bind-Value="patient.QuienApoyoEcoPas" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado1" class="custom-label">1a. ¿Qué tan satisfecha/o se sintió con este apoyo?</label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoEcoPas">
-            <ul>
-                @foreach (var element in patient.Satisfac)
+        </div>
+        <div class="custom-div">
+            <p>SECCIONES DE AFRONTAMIENTO Y APOYO SOCIAL DEL CUESTIONARIO DE AFRONTAMIENTO Y APOYO SOCIAL PARA ENFERMEDADES CRÓNICAS</p>
+            <p> 
+                El siguiente instrumento tiene la finalidad de saber cómo se sienten los pacientes que han tenido un trasplante y cómo afrontan las situaciones a las que se enfrentan y los tipos de apoyo que perciben.  Pedimos su ayuda para que responda las preguntas que cordialmente le presentamos, la información que nos proporcione será completa y estrictamente anónima, siendo rigurosamente utilizada para fines académicos y de investigación.
+            </p>
+            <p>SECCIÓN ESTRATEGIAS DE AFRONTAMIENTO</p>
+            <p>Instrucciones: Se le leerán varias oraciones relacionadas con la forma como las personas afrontan los problemas de la vida.  Estas formas de afrontamiento no son buenas, ni malas, ni mejores, ni peores; dependen de las situaciones que se viven. En cada oración usted escogerá una de las 6 (seis) opciones que se le darán. Elija la que más se acomoda a su forma de ser y afrontar sus problemas. Las seis opciones son:... </p>
+        </div>
+        <div class="custom-div">
+            @for (int i = 0; i < patient.AfrontamientoQuestionsText.Count; i++)
+            {
+                int index = i; // Local copy for lambda capture
+                if (index >= 0 && index < patient.AfrontamientoQuestions.Count)
                 {
-                    <li><InputRadio Value="@element" id="asmpasado1" class="custom-list" /> @element</li>
+                    <div class="m-2 p-2">
+                        <label>@patient.AfrontamientoQuestionsText[index]</label>
+                        @foreach (var answer in patient.AfrontamientoAnswers)
+                        {
+                            <div class="form-check">
+                                <InputRadioGroup @bind-Value="patient.AfrontamientoQuestions[index].SelectedAnswer" class="form-check-input">
+                                    <InputRadio Value="@answer" class="form-check-input" /> @answer
+                                    </InputRadioGroup>
+                            </div>
+                        }
+                    </div>
                 }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s2" class="custom-label">2. Para su trasplante, ¿quién o quiénes le ayudaron con sus actividades domésticas?</label>
-        <InputText id="s2" class="custom-input" @bind-Value="patient.QuienApoyoDomesticaPas" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado2" class="custom-label">2a. ¿Qué tan satisfecha/o se sintió con esta ayuda?</label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoDomesticaPas">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s3" class="custom-label">3. Recién recibido su trasplante, ¿quién o quiénes le acompañaban a sus citas?</label>
-        <InputText id="s3" class="custom-input" @bind-Value="patient.QuienApoyoCitaPas" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado3" class="custom-label">3a. ¿Qué tan satisfecha/o se sintió que le acompañen?</label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoCitaPas">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s4" class="custom-label">4. Para su trasplante, ¿quién o quiénes le ayudaron a llevar a cabo sus necesidades personales (como bañarse, pararse de una silla, apoyo para caminar, entre otras)?</label>
-        <InputText id="s4" class="custom-input" @bind-Value="patient.QuienApoyoPersonalPas" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">4a. ¿Qué tan satisfecha/o se sintió con esta ayuda?</label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoPersonalPas">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado5" class="custom-label">5. ¿Con qué frecuencia tuvo la necesidad de pedir prestado para solventar los gastos de su trasplante, como: compra de medicamentos, pago de consulta, transporte, etc.?</label>
-        <InputRadioGroup @bind-Value="patient.PedirPrestadoPas">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado5" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    <div class="custom-div">
-        <label for="s5a" class="custom-label">5a. ¿Quién o quiénes le proporcionaron este préstamo?</label>
-        <InputText id="s5a" class="custom-input" @bind-Value="patient.PedirPrestadoQuienPas" />
-    </div>
-    <div class="custom-div">
-        <label for="s6" class="custom-label">6. ¿Por cuánto tiempo recibió estos apoyos?</label>
-        <InputText id="s6" class="custom-input" @bind-Value="patient.PedirPrestadoTiempoPas" />
-    </div>
-
-    <div class="custom-div">
-        <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió esos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
-    </div>
-    <div class="custom-div">
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Triste  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Triste_ContentoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Contento(a)  </label>
-            </div>
+            }
+        </div>
+    }
+    else if (currentSection == 4)
+    {
+        <div class="custom-div">
+            <p>SECCIÓN APOYO SOCIAL</p>
+            <p>
+                Instrucciones: esta sección trata sobre el apoyo que le han dado otras personas en el momento del trasplante y hoy. Contiene preguntas abiertas y otras con varias opciones de respuesta que se le indicaran.  No hay respuestas correctas, ni incorrectas.
+            </p>
+            <p>
+                A.S.M. Pasado
+            </p>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inseguro(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inseguro_SeguroPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Seguro(a)  </label>
-            </div>
+         <div class="custom-div">
+            <label for="s1" class="custom-label">1. Para su trasplante, ¿quién o quiénes le apoyaron económicamente?</label>
+            <InputText id="s1" class="custom-input" @bind-Value="patient.QuienApoyoEcoPas" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado1" class="custom-label">1a. ¿Qué tan satisfecha/o se sintió con este apoyo?</label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoEcoPas">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado1" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Pesimista  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Pesimista_OptimistaPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Optimista  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s2" class="custom-label">2. Para su trasplante, ¿quién o quiénes le ayudaron con sus actividades domésticas?</label>
+            <InputText id="s2" class="custom-input" @bind-Value="patient.QuienApoyoDomesticaPas" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado2" class="custom-label">2a. ¿Qué tan satisfecha/o se sintió con esta ayuda?</label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoDomesticaPas">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desagradable  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Agradable  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s3" class="custom-label">3. Recién recibido su trasplante, ¿quién o quiénes le acompañaban a sus citas?</label>
+            <InputText id="s3" class="custom-input" @bind-Value="patient.QuienApoyoCitaPas" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado3" class="custom-label">3a. ¿Qué tan satisfecha/o se sintió que le acompañen?</label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoCitaPas">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inútil  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inutil_ÚtilPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Útil  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s4" class="custom-label">4. Para su trasplante, ¿quién o quiénes le ayudaron a llevar a cabo sus necesidades personales (como bañarse, pararse de una silla, apoyo para caminar, entre otras)?</label>
+            <InputText id="s4" class="custom-input" @bind-Value="patient.QuienApoyoPersonalPas" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">4a. ¿Qué tan satisfecha/o se sintió con esta ayuda?</label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoPersonalPas">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Preocupado  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Preocupado_SinpreocupacionPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Sin preocupación  </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado5" class="custom-label">5. ¿Con qué frecuencia tuvo la necesidad de pedir prestado para solventar los gastos de su trasplante, como: compra de medicamentos, pago de consulta, transporte, etc.?</label>
+            <InputRadioGroup @bind-Value="patient.PedirPrestadoPas">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado5" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+        <div class="custom-div">
+            <label for="s5a" class="custom-label">5a. ¿Quién o quiénes le proporcionaron este préstamo?</label>
+            <InputText id="s5a" class="custom-input" @bind-Value="patient.PedirPrestadoQuienPas" />
+        </div>
+        <div class="custom-div">
+            <label for="s6" class="custom-label">6. ¿Por cuánto tiempo recibió estos apoyos?</label>
+            <InputText id="s6" class="custom-input" @bind-Value="patient.PedirPrestadoTiempoPas" />
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incómodo(a)  </label>
+        <div class="custom-div">
+            <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió esos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
+        </div>
+        <div class="custom-div">
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Triste  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Triste_ContentoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Contento(a)  </label>
+                </div>
             </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inseguro(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inseguro_SeguroPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Seguro(a)  </label>
+                </div>
             </div>
-            <div class="question-label">
-                <label>  Cómodo(a) </label>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Pesimista  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Pesimista_OptimistaPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Optimista  </label>
+                </div>
             </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desagradable  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Agradable  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inútil  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inutil_ÚtilPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Útil  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Preocupado  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Preocupado_SinpreocupacionPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Sin preocupación  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incómodo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Cómodo(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incapaz  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incapaz_CapazPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Capaz </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Intranquilo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Tranquilo(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Asustado(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Relajado(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incomprendido(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Comprendido(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Infeliz </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Infeliz_FelizPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Feliz </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Solo(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Acompañado(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Sin amor </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Amado(a) </label>
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (currentSection == 5)
+    {
+        <div class="custom-div">
+            <p>
+                A.S.M. Presente
+            </p>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incapaz  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incapaz_CapazPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Capaz </label>
-            </div>
+        <div class="custom-div">
+            <label for="s1" class="custom-label">1. En la última semana, ¿quién o quiénes le han apoyado económicamente?</label>
+            <InputText id="s1" class="custom-input" @bind-Value="patient.QuienApoyoEco" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado1" class="custom-label">1a. ¿Qué tan satisfecha/o se siente con este apoyo? </label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoEco">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado1" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Intranquilo(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Tranquilo(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s2" class="custom-label">2. En la última semana, ¿quién o quiénes le han ayudado con sus actividades domésticas?</label>
+            <InputText id="s2" class="custom-input" @bind-Value="patient.QuienApoyoDomestica" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado2" class="custom-label">2a. ¿Qué tan satisfecha/o se siente con esta ayuda? </label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoDomestica">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Asustado(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Asustado_RelajadoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Relajado(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s3" class="custom-label">3. En la última cita de control, ¿quién o quiénes le han acompañado?</label>
+            <InputText id="s3" class="custom-input" @bind-Value="patient.QuienApoyoCita" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado3" class="custom-label">3a. ¿Qué tan satisfecha/o se siente que le acompañen? </label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoCita">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incomprendido(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Comprendido(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s4" class="custom-label">4. En la última semana, ¿quién o quiénes le han ayudado a llevar a cabo sus necesidades personales (como bañarse, pararse de una silla, apoyo para caminar, entre otras)?</label>
+            <InputText id="s4" class="custom-input" @bind-Value="patient.QuienApoyoPersonal" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">4a. ¿Qué tan satisfecha/o se siente con esta ayuda?</label>
+            <InputRadioGroup @bind-Value="patient.SatisfacApoyoPersonal">
+                <ul>
+                    @foreach (var element in patient.Satisfac)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Infeliz </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Infeliz_FelizPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Feliz </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado5" class="custom-label">5. En la última semana, ¿Con qué frecuencia ha tenido la necesidad de pedir prestado para solventar los gastos relacionados con su trasplante, como: compra de medicamentos, pago de consulta, transporte, etc.?</label>
+            <InputRadioGroup @bind-Value="patient.PedirPrestado">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado5" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+        <div class="custom-div">
+            <label for="s5a" class="custom-label">5a. ¿Quién o quiénes le proporcionaron este préstamo?</label>
+            <InputText id="s5a" class="custom-input" @bind-Value="patient.PedirPrestadoQuien" />
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Solo(a) </label>
+        <div class="custom-div">
+            <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
+        </div>
+        <div class="custom-div">
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Triste  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Triste_Contento">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Contento(a)  </label>
+                </div>
             </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inseguro(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inseguro_Seguro">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Seguro(a)  </label>
+                </div>
             </div>
-            <div class="question-label">
-                <label>  Acompañado(a) </label>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Pesimista  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Pesimista_Optimista">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Optimista  </label>
+                </div>
             </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desagradable  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desagradable_Agradable">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Agradable  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inútil  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inutil_Útil">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Útil  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Preocupado  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Preocupado_Sinpreocupacion">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Sin preocupación  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incómodo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomodo_Comodo">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Cómodo(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incapaz  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incapaz_Capaz">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Capaz </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Intranquilo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Intranquilo_Tranquilo">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Tranquilo(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Asustado(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Asustado_Relajado">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Relajado(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incomprendido(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomprendido_Comprendido">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Comprendido(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Infeliz </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Infeliz_Feliz">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Feliz </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Solo(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Solo_Acompanado">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Acompañado(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Sin amor </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Sinamor_Amado">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Amado(a) </label>
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (currentSection == 6)
+    {
+        <div class="custom-div">
+            <p>
+                A.S.I. Pasado
+            </p>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Sin amor </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Amado(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s1" class="custom-label">1. ¿De quién o quiénes recibió información acerca de su trasplante?</label>
+            <InputText id="s1" class="custom-input" @bind-Value="patient.QuienInfoPas" />
         </div>
 
-    </div>
-
-
-    <div class="custom-div">
-        <p>
-            A.S.M. Presente
-        </p>
-    </div>
-
-    <div class="custom-div">
-        <label for="s1" class="custom-label">1. En la última semana, ¿quién o quiénes le han apoyado económicamente?</label>
-        <InputText id="s1" class="custom-input" @bind-Value="patient.QuienApoyoEco" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado1" class="custom-label">1a. ¿Qué tan satisfecha/o se siente con este apoyo? </label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoEco">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado1" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s2" class="custom-label">2. En la última semana, ¿quién o quiénes le han ayudado con sus actividades domésticas?</label>
-        <InputText id="s2" class="custom-input" @bind-Value="patient.QuienApoyoDomestica" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado2" class="custom-label">2a. ¿Qué tan satisfecha/o se siente con esta ayuda? </label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoDomestica">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s3" class="custom-label">3. En la última cita de control, ¿quién o quiénes le han acompañado?</label>
-        <InputText id="s3" class="custom-input" @bind-Value="patient.QuienApoyoCita" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado3" class="custom-label">3a. ¿Qué tan satisfecha/o se siente que le acompañen? </label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoCita">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s4" class="custom-label">4. En la última semana, ¿quién o quiénes le han ayudado a llevar a cabo sus necesidades personales (como bañarse, pararse de una silla, apoyo para caminar, entre otras)?</label>
-        <InputText id="s4" class="custom-input" @bind-Value="patient.QuienApoyoPersonal" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">4a. ¿Qué tan satisfecha/o se siente con esta ayuda?</label>
-        <InputRadioGroup @bind-Value="patient.SatisfacApoyoPersonal">
-            <ul>
-                @foreach (var element in patient.Satisfac)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado5" class="custom-label">5. En la última semana, ¿Con qué frecuencia ha tenido la necesidad de pedir prestado para solventar los gastos relacionados con su trasplante, como: compra de medicamentos, pago de consulta, transporte, etc.?</label>
-        <InputRadioGroup @bind-Value="patient.PedirPrestado">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado5" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    <div class="custom-div">
-        <label for="s5a" class="custom-label">5a. ¿Quién o quiénes le proporcionaron este préstamo?</label>
-        <InputText id="s5a" class="custom-input" @bind-Value="patient.PedirPrestadoQuien" />
-    </div>
-
-    <div class="custom-div">
-        <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
-    </div>
-    <div class="custom-div">
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Triste  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Triste_Contento">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Contento(a)  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s2" class="custom-label">2. ¿Quién o quiénes le proporcionaron folletos, artículos o revistas relacionados con su trasplante?</label>
+            <InputText id="s2" class="custom-input" @bind-Value="patient.QuienFoletosArticulosRevistasPas" />
+        </div>
+        <div class="custom-div">
+            <label for="s3" class="custom-label">3. ¿Quién o quiénes le dieron consejos de qué hacer con respecto a su trasplante (cuidar la alimentación o tomar los medicamentos, etc.)?</label>
+            <InputText id="s3" class="custom-input" @bind-Value="patient.QuienConsejosPas" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia llevó a cabo estos consejos?  </label>
+            <InputRadioGroup @bind-Value="patient.ConsejoFrecPas">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inseguro(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inseguro_Seguro">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Seguro(a)  </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">4 ¿Asistió a sus consultas de control? </label>
+            <InputRadioGroup @bind-Value="patient.ConsultaControlPas">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Pesimista  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Pesimista_Optimista">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Optimista  </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">5 ¿Asistió a terapias psicológicas? </label>
+            <InputRadioGroup @bind-Value="patient.TerapiasPsicologicaPas">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desagradable  </label>
+        <div class="custom-div">
+            <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha</p>
+        </div>
+        <div class="custom-div">
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Mal informado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Malinformado_BieninformadoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Bien informado(a)  </label>
+                </div>
             </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desagradable_Agradable">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Intranquilo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Tranquilo(a)  </label>
+                </div>
             </div>
-            <div class="question-label">
-                <label>  Agradable  </label>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desinterés de los demás  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_InteresdelosdemasPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Interés de los demás  </label>
+                </div>
             </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Asustado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Relajado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Enojado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Enojado_SerenoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Sereno(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desmotivado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Motivado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Insatisfecho(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Insatisfecho_SatisfechoPas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Satisfecho(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inconforme  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inconforme_ConformePas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Conforme </label>
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (currentSection == 7)
+    {
+        <div class="custom-div">
+            <p>
+                A.S.I. Presente
+            </p>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inútil  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inutil_Útil">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Útil  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s1" class="custom-label">1. ¿De quién o quiénes recibe información acerca de su trasplante?</label>
+            <InputText id="s1" class="custom-input" @bind-Value="patient.QuienInfo" />
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Preocupado  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Preocupado_Sinpreocupacion">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Sin preocupación  </label>
-            </div>
+        <div class="custom-div">
+            <label for="s2" class="custom-label">2. ¿Quién o quiénes le proporcionan folletos, artículos o revistas relacionados con su trasplante?</label>
+            <InputText id="s2" class="custom-input" @bind-Value="patient.QuienFoletosArticulosRevistas" />
+        </div>
+        <div class="custom-div">
+            <label for="s3" class="custom-label">3. ¿Quién o quiénes le dan consejos de qué hacer con respecto a su trasplante (cuidar la alimentación o tomar los medicamentos, etc.)?</label>
+            <InputText id="s3" class="custom-input" @bind-Value="patient.QuienConsejos" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia lleva a cabo estos consejos?   </label>
+            <InputRadioGroup @bind-Value="patient.ConsejoFrec">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incómodo(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomodo_Comodo">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Cómodo(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">4. ¿Asiste a sus consultas de control </label>
+            <InputRadioGroup @bind-Value="patient.ConsultaControl">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incapaz  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incapaz_Capaz">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Capaz </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">5. ¿Asiste a terapias psicológicas?  </label>
+            <InputRadioGroup @bind-Value="patient.TerapiasPsicologica">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Intranquilo(a)  </label>
+        <div class="custom-div">
+            <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  </p>
+        </div>
+        <div class="custom-div">
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Mal informado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Malinformado_Bieninformado">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Bien informado(a)  </label>
+                </div>
             </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Intranquilo_Tranquilo">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Intranquilo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfo">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Tranquilo(a)  </label>
+                </div>
             </div>
-            <div class="question-label">
-                <label>  Tranquilo(a) </label>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desinterés de los demás  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_Interesdelosdemas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Interés de los demás  </label>
+                </div>
             </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Asustado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfo">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Relajado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Enojado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Enojado_Sereno">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Sereno(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desmotivado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desmotivado_Motivado">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Motivado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Insatisfecho(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Insatisfecho_Satisfecho">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Satisfecho(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Inconforme  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Inconforme_Conforme">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Conforme </label>
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (currentSection == 8)
+    {
+        <div class="custom-div">
+            <p>
+                A.S.E
+            </p>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Asustado(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Asustado_Relajado">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Relajado(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s1" class="custom-label">1. ¿Con quién o quiénes platica de su trasplante?</label>
+            <InputText id="s1" class="custom-input" @bind-Value="patient.QuienPlatica" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado2" class="custom-label">2. ¿Con qué frecuencia platica de su trasplante?  </label>
+            <InputRadioGroup @bind-Value="patient.QuienPlaticaFrec">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incomprendido(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomprendido_Comprendido">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Comprendido(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="s3" class="custom-label">3.	¿De quién o quiénes siente cariño?</label>
+            <InputText id="s3" class="custom-input" @bind-Value="patient.QuienCarino" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia siente ese cariño?  </label>
+            <InputRadioGroup @bind-Value="patient.QuienCarinoFrec">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Infeliz </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Infeliz_Feliz">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Feliz </label>
-            </div>
+        <div class="custom-div">
+            <label for="s4" class="custom-label">4. ¿De quién o quiénes siente interés por lo que está usted pasando?</label>
+            <InputText id="s4" class="custom-input" @bind-Value="patient.QuienInteres" />
+        </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">4a. ¿Con qué frecuencia siente usted este interés?   </label>
+            <InputRadioGroup @bind-Value="patient.QuienInteresFrec">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Solo(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Solo_Acompanado">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Acompañado(a) </label>
-            </div>
+        <div class="custom-div">
+            <label for="asmpasado4" class="custom-label">5. ¿Ha sentido alguna vez la sensación de burla o ha sido mal visto por las personas debido a su trasplante? </label>
+            <InputRadioGroup @bind-Value="patient.QuienBurlaFrec">
+                <ul>
+                    @foreach (var element in patient.Freq1)
+                    {
+                        <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
+        </div>
+        <div class="custom-div">
+            <label for="s6" class="custom-label">6. ¿De quienes ha percibido estas sensaciones?</label>
+            <InputText id="s6" class="custom-input" @bind-Value="patient.QuienBurla" />
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Sin amor </label>
+        <div class="custom-div">
+            <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.   </p>
+        </div>
+        <div class="custom-div">
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desagradable  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Agradable </label>
+                </div>
             </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Sinamor_Amado">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incómodo(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Cómodo(a)  </label>
+                </div>
             </div>
-            <div class="question-label">
-                <label>  Amado(a) </label>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Solo(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Acompañado(a) </label>
+                </div>
             </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desmotivado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Motivado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Ignorado(a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Ignorado_EscuchadoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Escuchado(a)  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Sin amor  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Amado  </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Incomprendido(a) </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Comprendido(a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Infeliz  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Infeliz_FelizPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Feliz </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Desalentado (a)  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Desalentado_EsperanzadoPersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Esperanzado (a) </label>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="question-label">
+                    <label>  Frágil  </label>
+                </div>
+                <div class="flex-radio-group">
+                    <InputRadioGroup @bind-Value="patient.Fragil_FuertePersonas">
+                        <div class="radio-options">
+                            @foreach (var element in patient.SentimientosVals)
+                            {
+                                <div class="form-check">
+                                    <InputRadio class="form-check-input" Value="@element" /> @element
+                                </div>
+                            }
+                        </div>
+                    </InputRadioGroup>
+                </div>
+                <div class="question-label">
+                    <label>  Fuerte </label>
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (currentSection == 9)
+    {
+        <div class="custom-div">
+            <p>
+                DIMENSIÓN DE BIENESTAR DEL CUESTIONARIO DE SALUD SF-36
+            </p>
+            <p>
+                Instrucciones: Por cada una de las preguntas, por favor marque con una X el cuadrito que mejor describa su respuesta.
+            </p>
         </div>
 
-    </div>
-
-
-    <div class="custom-div">
-        <p>
-            A.S.I. Pasado
-        </p>
-    </div>
-
-    <div class="custom-div">
-        <label for="s1" class="custom-label">1. ¿De quién o quiénes recibió información acerca de su trasplante?</label>
-        <InputText id="s1" class="custom-input" @bind-Value="patient.QuienInfoPas" />
-    </div>
-
-    <div class="custom-div">
-        <label for="s2" class="custom-label">2. ¿Quién o quiénes le proporcionaron folletos, artículos o revistas relacionados con su trasplante?</label>
-        <InputText id="s2" class="custom-input" @bind-Value="patient.QuienFoletosArticulosRevistasPas" />
-    </div>
-    <div class="custom-div">
-        <label for="s3" class="custom-label">3. ¿Quién o quiénes le dieron consejos de qué hacer con respecto a su trasplante (cuidar la alimentación o tomar los medicamentos, etc.)?</label>
-        <InputText id="s3" class="custom-input" @bind-Value="patient.QuienConsejosPas" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia llevó a cabo estos consejos?  </label>
-        <InputRadioGroup @bind-Value="patient.ConsejoFrecPas">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">4 ¿Asistió a sus consultas de control? </label>
-        <InputRadioGroup @bind-Value="patient.ConsultaControlPas">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">5 ¿Asistió a terapias psicológicas? </label>
-        <InputRadioGroup @bind-Value="patient.TerapiasPsicologicaPas">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha</p>
-    </div>
-    <div class="custom-div">
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Mal informado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Malinformado_BieninformadoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Bien informado(a)  </label>
-            </div>
+        <div class="custom-div">
+            <label for="anexo4.1" class="custom-label">En general, ¿diría usted que su salud es:  </label>
+            <InputRadioGroup @bind-Value="patient.SaludEs">
+                <ul>
+                    @foreach (var element in patient.SaludEscala)
+                    {
+                        <li><InputRadio Value="@element" id="anexo4.1" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
 
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Intranquilo(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Tranquilo(a)  </label>
-            </div>
+        <div class="custom-div">
+            <label for="anexo4.1" class="custom-label">Comparado su salud con la de la hace un año, ¿Cómo la calificaría usted en general ahora?</label>
+            <InputRadioGroup @bind-Value="patient.SaludCom">
+                <ul>
+                    @foreach (var element in patient.SaludComEscala)
+                    {
+                        <li><InputRadio Value="@element" id="anexo4.1" class="custom-list" /> @element</li>
+                    }
+                </ul>
+            </InputRadioGroup>
         </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desinterés de los demás  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_InteresdelosdemasPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Interés de los demás  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Asustado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Relajado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Enojado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Enojado_SerenoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Sereno(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desmotivado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Motivado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Insatisfecho(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Insatisfecho_SatisfechoPas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Satisfecho(a) </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inconforme  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inconforme_ConformePas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Conforme </label>
-            </div>
-        </div>
-
-    </div>
-
-
-    <div class="custom-div">
-        <p>
-            A.S.I. Presente
-        </p>
-    </div>
-
-    <div class="custom-div">
-        <label for="s1" class="custom-label">1. ¿De quién o quiénes recibe información acerca de su trasplante?</label>
-        <InputText id="s1" class="custom-input" @bind-Value="patient.QuienInfo" />
-    </div>
-
-    <div class="custom-div">
-        <label for="s2" class="custom-label">2. ¿Quién o quiénes le proporcionan folletos, artículos o revistas relacionados con su trasplante?</label>
-        <InputText id="s2" class="custom-input" @bind-Value="patient.QuienFoletosArticulosRevistas" />
-    </div>
-    <div class="custom-div">
-        <label for="s3" class="custom-label">3. ¿Quién o quiénes le dan consejos de qué hacer con respecto a su trasplante (cuidar la alimentación o tomar los medicamentos, etc.)?</label>
-        <InputText id="s3" class="custom-input" @bind-Value="patient.QuienConsejos" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia lleva a cabo estos consejos?   </label>
-        <InputRadioGroup @bind-Value="patient.ConsejoFrec">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">4. ¿Asiste a sus consultas de control </label>
-        <InputRadioGroup @bind-Value="patient.ConsultaControl">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">5. ¿Asiste a terapias psicológicas?  </label>
-        <InputRadioGroup @bind-Value="patient.TerapiasPsicologica">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  </p>
-    </div>
-    <div class="custom-div">
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Mal informado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Malinformado_Bieninformado">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Bien informado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Intranquilo(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfo">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Tranquilo(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desinterés de los demás  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_Interesdelosdemas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Interés de los demás  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Asustado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfo">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Relajado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Enojado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Enojado_Sereno">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Sereno(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desmotivado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desmotivado_Motivado">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Motivado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Insatisfecho(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Insatisfecho_Satisfecho">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Satisfecho(a) </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Inconforme  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Inconforme_Conforme">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Conforme </label>
-            </div>
-        </div>
-
-    </div>
-
-
-    <div class="custom-div">
-        <p>
-            A.S.E
-        </p>
-    </div>
-
-    <div class="custom-div">
-        <label for="s1" class="custom-label">1. ¿Con quién o quiénes platica de su trasplante?</label>
-        <InputText id="s1" class="custom-input" @bind-Value="patient.QuienPlatica" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado2" class="custom-label">2. ¿Con qué frecuencia platica de su trasplante?  </label>
-        <InputRadioGroup @bind-Value="patient.QuienPlaticaFrec">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado2" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s3" class="custom-label">3.	¿De quién o quiénes siente cariño?</label>
-        <InputText id="s3" class="custom-input" @bind-Value="patient.QuienCarino" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado3" class="custom-label">3a. ¿Con qué frecuencia siente ese cariño?  </label>
-        <InputRadioGroup @bind-Value="patient.QuienCarinoFrec">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado3" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="s4" class="custom-label">4. ¿De quién o quiénes siente interés por lo que está usted pasando?</label>
-        <InputText id="s4" class="custom-input" @bind-Value="patient.QuienInteres" />
-    </div>
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">4a. ¿Con qué frecuencia siente usted este interés?   </label>
-        <InputRadioGroup @bind-Value="patient.QuienInteresFrec">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="asmpasado4" class="custom-label">5. ¿Ha sentido alguna vez la sensación de burla o ha sido mal visto por las personas debido a su trasplante? </label>
-        <InputRadioGroup @bind-Value="patient.QuienBurlaFrec">
-            <ul>
-                @foreach (var element in patient.Freq1)
-                {
-                    <li><InputRadio Value="@element" id="asmpasado4" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-    <div class="custom-div">
-        <label for="s6" class="custom-label">6. ¿De quienes ha percibido estas sensaciones?</label>
-        <InputText id="s6" class="custom-input" @bind-Value="patient.QuienBurla" />
-    </div>
-
-    <div class="custom-div">
-        <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.   </p>
-    </div>
-    <div class="custom-div">
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desagradable  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Agradable </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incómodo(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Cómodo(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Solo(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Acompañado(a) </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desmotivado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Motivado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Ignorado(a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Ignorado_EscuchadoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Escuchado(a)  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Sin amor  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Amado  </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Incomprendido(a) </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Comprendido(a) </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Infeliz  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Infeliz_FelizPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Feliz </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Desalentado (a)  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Desalentado_EsperanzadoPersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Esperanzado (a) </label>
-            </div>
-        </div>
-
-        <div class="flex-container">
-            <div class="question-label">
-                <label>  Frágil  </label>
-            </div>
-            <div class="flex-radio-group">
-                <InputRadioGroup @bind-Value="patient.Fragil_FuertePersonas">
-                    <div class="radio-options">
-                        @foreach (var element in patient.SentimientosVals)
-                        {
-                            <div class="form-check">
-                                <InputRadio class="form-check-input" Value="@element" /> @element
-                            </div>
-                        }
-                    </div>
-                </InputRadioGroup>
-            </div>
-            <div class="question-label">
-                <label>  Fuerte </label>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="custom-div">
-        <p>
-            DIMENSIÓN DE BIENESTAR DEL CUESTIONARIO DE SALUD SF-36
-        </p>
-        <p>
-            Instrucciones: Por cada una de las preguntas, por favor marque con una X el cuadrito que mejor describa su respuesta.
-        </p>
-    </div>
-
-    <div class="custom-div">
-        <label for="anexo4.1" class="custom-label">En general, ¿diría usted que su salud es:  </label>
-        <InputRadioGroup @bind-Value="patient.SaludEs">
-            <ul>
-                @foreach (var element in patient.SaludEscala)
-                {
-                    <li><InputRadio Value="@element" id="anexo4.1" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
-    <div class="custom-div">
-        <label for="anexo4.1" class="custom-label">Comparado su salud con la de la hace un año, ¿Cómo la calificaría usted en general ahora?</label>
-        <InputRadioGroup @bind-Value="patient.SaludCom">
-            <ul>
-                @foreach (var element in patient.SaludComEscala)
-                {
-                    <li><InputRadio Value="@element" id="anexo4.1" class="custom-list" /> @element</li>
-                }
-            </ul>
-        </InputRadioGroup>
-    </div>
-
+    }
+    <button type="button" @onclick="() => GoToSection(-1)">Previous</button>
+    <button type="button" @onclick="() => GoToSection(1)">Next</button>
     <button type="submit" class="btn btn-primary">@btntext</button>
 </EditForm>
 
@@ -1976,6 +1993,33 @@ else
     public Entities.Patient patient { get; set; } = new Entities.Patient { NameEnc = string.Empty, Name = string.Empty, SurnameP = string.Empty, SurnameM = string.Empty };
 
     string btntext = string.Empty;
+
+    private int currentSection = 0;
+    async private void GoToSection(int section)
+    {
+        // You can add validation or save data logic here
+        int sectionval = currentSection + section;
+        if(sectionval<0)
+        {
+            sectionval = 0;
+        }
+        if(sectionval>9)
+        {
+            sectionval = 9;
+        }
+        currentSection = sectionval;
+        if (Id == null)
+        {
+            //await PatientService.AddPatient(patient);
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
+        }
+        else
+        {
+            //await PatientService.UpdatePatient(patient);
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         if (Id != null)

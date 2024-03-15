@@ -50,10 +50,10 @@ namespace Tnet.Entities
         public List<string> Religiones = new List<string> { "Católica", "Protestante", "Otra" };
         public string? religionOtra { get; set; } //nuevo
 
-        public bool HablalenguaIndigena { get; set; }
+        public bool HablalenguaIndigena = false;
         public string? lenguaIndigenaCual { get; set; } //nuevo
 
-        public bool PertenecegrupoEtnico { get; set; }
+        public bool PertenecegrupoEtnico = false;
         public string? grupoEtnicoCual { get; set; } //nuevo
 
         public string? ocupacionSeleccionada { get; set; }
