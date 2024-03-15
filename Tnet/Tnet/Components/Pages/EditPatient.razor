@@ -2010,12 +2010,12 @@ else
         currentSection = sectionval;
         if (Id == null)
         {
-            //await PatientService.AddPatient(patient);
+            await PatientService.AddPatient(patient);
             await JSRuntime.InvokeVoidAsync("scrollToTop");
         }
         else
         {
-            //await PatientService.UpdatePatient(patient);
+            await PatientService.UpdatePatient(patient);
             await JSRuntime.InvokeVoidAsync("scrollToTop");
         }
     }
