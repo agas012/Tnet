@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tnet.Data;
 
@@ -11,9 +12,11 @@ using Tnet.Data;
 namespace Tnet.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240319013210_upd8")]
+    partial class upd8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,9 +209,11 @@ namespace Tnet.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameEnc")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PedirPrestado")
@@ -391,46 +396,46 @@ namespace Tnet.Migrations
                     b.Property<string>("Triste_ContentoPas")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("anioDiagnostico")
+                    b.Property<int>("anioDiagnostico")
                         .HasColumnType("int");
 
-                    b.Property<int?>("anioTieneTrasplante")
+                    b.Property<int>("anioTieneTrasplante")
                         .HasColumnType("int");
 
-                    b.Property<int?>("anioTrasplante")
+                    b.Property<int>("anioTrasplante")
                         .HasColumnType("int");
 
-                    b.Property<int?>("aniosdeestudio")
+                    b.Property<int>("aniosdeestudio")
                         .HasColumnType("int");
 
-                    b.Property<int?>("diaDiagnostico")
+                    b.Property<int>("diaDiagnostico")
                         .HasColumnType("int");
 
-                    b.Property<int?>("diaTieneTrasplante")
+                    b.Property<int>("diaTieneTrasplante")
                         .HasColumnType("int");
 
-                    b.Property<int?>("diaTrasplante")
+                    b.Property<int>("diaTrasplante")
                         .HasColumnType("int");
 
                     b.Property<string>("estadocivilSeleccionado")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("fechadeaplicacionAnio")
+                    b.Property<int>("fechadeaplicacionAnio")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fechadeaplicacionDia")
+                    b.Property<int>("fechadeaplicacionDia")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fechadeaplicacionMes")
+                    b.Property<int>("fechadeaplicacionMes")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fechadenacimientoAnio")
+                    b.Property<int>("fechadenacimientoAnio")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fechadenacimientoDia")
+                    b.Property<int>("fechadenacimientoDia")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fechadenacimientoMes")
+                    b.Property<int>("fechadenacimientoMes")
                         .HasColumnType("int");
 
                     b.Property<string>("generoOtro")
@@ -475,13 +480,13 @@ namespace Tnet.Migrations
                     b.Property<string>("lugardeResidenciaMunicipio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("mesDiagnostico")
+                    b.Property<int>("mesDiagnostico")
                         .HasColumnType("int");
 
-                    b.Property<int?>("mesTieneTrasplante")
+                    b.Property<int>("mesTieneTrasplante")
                         .HasColumnType("int");
 
-                    b.Property<int?>("mesTrasplante")
+                    b.Property<int>("mesTrasplante")
                         .HasColumnType("int");
 
                     b.Property<int?>("numcuestionario")
@@ -493,10 +498,10 @@ namespace Tnet.Migrations
                     b.Property<string>("ocupacionSeleccionada")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("personasAportanGastos")
+                    b.Property<int>("personasAportanGastos")
                         .HasColumnType("int");
 
-                    b.Property<int?>("personasEnCasa")
+                    b.Property<int>("personasEnCasa")
                         .HasColumnType("int");
 
                     b.Property<string>("principalProveedorEconomico")

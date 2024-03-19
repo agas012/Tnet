@@ -9,33 +9,31 @@ namespace Tnet.Entities
     public class Patient
     {
         public int Id { get; set; }
-        public int numcuestionario { get; set; }
-        public int fechadeaplicacionDia { get; set; }
-        public int fechadeaplicacionMes { get; set; }
-        public int fechadeaplicacionAnio { get; set; }
-        [Required]
-        public required string Name { get; set; } //o paginap
-        [Required]
-        public required string? SurnameP { get; set; }//paginap 
-        [Required]
-        public required string? SurnameM { get; set; }//paginap
-        [Required]
-        public required string NameEnc { get; set; } //o paginap
-
-
+        public int? numcuestionario { get; set; }
+        public int? fechadeaplicacionDia { get; set; }
+        public int? fechadeaplicacionMes { get; set; }
+        public int? fechadeaplicacionAnio { get; set; }
+        public string? Name { get; set; } //o paginap
+        public string? SurnameP { get; set; }//paginap 
+        public string? SurnameM { get; set; }//paginap
+        public string? NameEnc { get; set; } //o paginap
         public string? ECUNumber { get; set; }//o paginap
 
-
+        [RegularExpression(@"^\d{8,}$", ErrorMessage = "El numero de telefono tiene que tener por lo menos 8 digitos.")]
         public string? Phone1 { get; set; }
+        [RegularExpression(@"^\d{8,}$", ErrorMessage = "El numero de telefono tiene que tener por lo menos 8 digitos.")]
         public string? Phone2 { get; set; }
+        [RegularExpression(@"^\d{8,}$", ErrorMessage = "El numero de telefono tiene que tener por lo menos 8 digitos.")]
         public string? Phone3 { get; set; }
 
+        [EmailAddress(ErrorMessage = "formato no correcto.")]
         public string? Email1 { get; set; }
+        [EmailAddress(ErrorMessage = "formato no correcto.")]
         public string? Email2 { get; set; }
 
-        public int fechadenacimientoDia { get; set; }
-        public int fechadenacimientoMes { get; set; }
-        public int fechadenacimientoAnio { get; set; }
+        public int? fechadenacimientoDia { get; set; }
+        public int? fechadenacimientoMes { get; set; }
+        public int? fechadenacimientoAnio { get; set; }
 
         public string? generoSeleccionado { get; set; }
         public List<string> Generos = new List<string> { "Hombre", "Mujer", "No binario", "Otro", "Prefiero no decirlo" };
@@ -44,7 +42,9 @@ namespace Tnet.Entities
         public string? estadocivilSeleccionado { get; set; }
         public List<string> EstadosCiviles = new List<string> { "Soltera(o)", "Unión libre", "Casada(o)", "Separada(o)", "Divorciada(o)", "Viuda(o)" };
 
-        public int aniosdeestudio { get; set; }
+
+        public int? aniosdeestudio { get; set; }
+
 
         public string? religionSeleccionada { get; set; }
         public List<string> Religiones = new List<string> { "Católica", "Protestante", "Otra" };
@@ -52,7 +52,7 @@ namespace Tnet.Entities
 
         public bool HablalenguaIndigena = false;
         public string? lenguaIndigenaCual { get; set; } //nuevo
-
+        
         public bool PertenecegrupoEtnico = false;
         public string? grupoEtnicoCual { get; set; } //nuevo
 
@@ -79,8 +79,8 @@ namespace Tnet.Entities
         public string? lugardeResidenciaMunicipio { get; set; }
         public string? lugardeResidenciaEstado { get; set; }
 
-        public int personasEnCasa { get; set; }
-        public int personasAportanGastos { get; set; }
+        public int? personasEnCasa { get; set; }
+        public int? personasAportanGastos { get; set; }
 
         public string? principalProveedorEconomico { get; set; }
         public List<string> ProvedoresEconomicos = new List<string> { "Paciente", "Pareja", "Hijos", "Mamá", "Papá", "Otros" };
@@ -111,15 +111,15 @@ namespace Tnet.Entities
         public string? tipoDeTrasplante { get; set; }
         public List<string> TiposDeTrasplante = new List<string> { "Trasplante renal donador vivo", "Trasplante renal donador fallecido", "Trasplante hepático", "Trasplante de córnea" };
 
-        public int diaTrasplante { get; set; }
-        public int mesTrasplante { get; set; }
-        public int anioTrasplante { get; set; }
-        public int diaTieneTrasplante { get; set; }//CALCULAR automatico fecha de hoy //paginap 
-        public int mesTieneTrasplante { get; set; }//paginap 
-        public int anioTieneTrasplante { get; set; }//paginap 
-        public int diaDiagnostico { get; set; }
-        public int mesDiagnostico { get; set; }
-        public int anioDiagnostico { get; set; }
+        public int? diaTrasplante { get; set; }
+        public int? mesTrasplante { get; set; }
+        public int? anioTrasplante { get; set; }
+        public int? diaTieneTrasplante { get; set; }//CALCULAR automatico fecha de hoy //paginap 
+        public int? mesTieneTrasplante { get; set; }//paginap 
+        public int? anioTieneTrasplante { get; set; }//paginap 
+        public int? diaDiagnostico { get; set; }
+        public int? mesDiagnostico { get; set; }
+        public int? anioDiagnostico { get; set; }
 
         //anexo 2
         public List<string> ResilenciaQuestionsText = new List<string> {

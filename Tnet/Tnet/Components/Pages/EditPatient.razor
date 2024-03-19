@@ -48,7 +48,7 @@
 
     .flex-container {
         display: flex;
-        grid-template-columns: auto minmax(0, 1fr); /* Adjust 'auto' if you want specific width for labels */
+        grid-template-columns: 60px 60px; 
         gap: 20px; /* Space between columns */
         align-items: center;
         margin-bottom: 15px; /* Space between questions */
@@ -70,6 +70,42 @@
         margin-right: 20px; /* Adjust the space as needed */
         margin-left: 20px; /* Adjust the space as needed */
     }
+
+    .answer-cell {
+        width: 50px; /* Adjust the width as needed */
+        text-align: center;
+        padding: 2px; /* Adjust padding as needed */
+        margin: 2px;
+    }
+
+    .question-cell {
+        /* width: 100px; /* Adjust the width as needed */
+        text-align: right;
+        padding: 2px; /* Adjust padding as needed */
+        margin: 2px;
+    }
+
+    .custom-table {
+        width: 60%; /* Adjust based on your needs */
+        margin: 0 auto; /* This centers the table on the page */
+    }
+
+    .exit-button {
+        position: fixed; /* Fixed position on the screen */
+        top: 20px; /* Adjust based on your layout */
+        right: 20px; /* Adjust based on your layout */
+        z-index: 1000; /* Ensure it's above other elements */
+        width: 500px; /* Set the width of the button */
+        height: 40px; /* Set the height of the button */
+        font-size: 20px; /* Set the font size */
+        background-color: #f44336; /* Set background color */
+        color: white; /* Set text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Optional: adds rounded corners */
+        cursor: pointer; /* Changes cursor to pointer on hover */
+    }
+
+
 </style>
 
 @if (Id == null)
@@ -83,9 +119,12 @@ else
     <h3>Paciente: @patient.Name</h3>
 }
 
-<EditForm Model="@patient" OnSubmit="HandleSubmit" FormName="editPatient">
-    @if (currentSection == 0)
-    {
+
+@if (currentSection == 0)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(1, true)" FormName="editPatient">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
         <div class="custom-div">
             <label for="cuestionario" class="custom-label">No. de cuestionario:</label>
             <InputNumber id="cuestionario" class="custom-inpu-datet" @bind-Value="patient.numcuestionario" />
@@ -123,8 +162,11 @@ else
         <div class="custom-div">
             <label for="tel" class="custom-label">Teléfonos</label>
             <InputText id="tel" class="custom-input" @bind-Value="patient.Phone1" />
+            <ValidationMessage For="@(() => patient.Phone1)" />
             <InputText id="tel" class="custom-input" @bind-Value="patient.Phone2" />
+            <ValidationMessage For="@(() => patient.Phone2)" />
             <InputText id="tel" class="custom-input" @bind-Value="patient.Phone3" />
+            <ValidationMessage For="@(() => patient.Phone3)" />
         </div>
         <div class="custom-div">
             <label for="correo" class="custom-label">Correos electrónico</label>
@@ -137,15 +179,15 @@ else
             <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoMes" />
             <InputNumber id="fechan" class="custom-input-date" @bind-Value="patient.fechadenacimientoAnio" />
         </div>
-    
+
         <div class="custom-div">
             <label for="genero" class="custom-label">¿Con cuál género se identifica? </label>
             <InputRadioGroup @bind-Value="patient.generoSeleccionado">
                 <ul>
-                @foreach (var element in patient.Generos)
-                {
+                    @foreach (var element in patient.Generos)
+                    {
                         <li><InputRadio Value="@element" id="genero" class="custom-list" /> @element</li>
-                }
+                    }
                 </ul>
             </InputRadioGroup>
         </div>
@@ -156,17 +198,22 @@ else
                 <InputText id="generootro" class="custom-input" @bind-Value="patient.generoOtro" />
             </div>
         }
-    }
-    else if (currentSection == 1)
-    {
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 1)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(2, true)" FormName="editPatient">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
         <div class="custom-div">
             <label for="estadocivil" class="custom-label">¿Estado civil actual? </label>
             <InputRadioGroup @bind-Value="patient.estadocivilSeleccionado">
                 <ul>
-                @foreach (var element in patient.EstadosCiviles)
-                {
+                    @foreach (var element in patient.EstadosCiviles)
+                    {
                         <li><InputRadio Value="@element" id="estadocivil" class="custom-list" /> @element</li>
-                }
+                    }
                 </ul>
             </InputRadioGroup>
         </div>
@@ -260,9 +307,15 @@ else
             <label for="Estado" class="custom-label">Estado</label>
             <InputText id="Estado" class="custom-input" @bind-Value="patient.lugardeResidenciaEstado" />
         </div>
-    }
-    else if (currentSection == 2)
-    {
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 2)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(3, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <label for="vivecantidad" class="custom-label">Hoy ¿con cuántas personas vive?</label>
             <InputNumber id="vivecantidad" class="custom-inpu-datet" @bind-Value="patient.personasEnCasa" />
@@ -321,7 +374,7 @@ else
         </div>
 
         <div class="custom-div">
-            <label for="transplaterec" class="custom-label">La casa donde vive es:</label>
+            <label for="transplaterec" class="custom-label">¿Qué tipo de trasplante recibió?</label>
             <InputRadioGroup @bind-Value="patient.tipoDeTrasplante">
                 <ul>
                     @foreach (var element in patient.TiposDeTrasplante)
@@ -345,66 +398,108 @@ else
             <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.mesDiagnostico" />
             <InputNumber id="fechaa" class="custom-input-date" @bind-Value="patient.anioDiagnostico" />
         </div>
-    }
-    else if (currentSection == 3)
-    {
-        <p style="font-weight:bold">ESCALA DE MEDICIÓN DE LA RESILIENCIA CON MEXICANOS RESI-M </p>
-        <p>
-            Instrucciones: A continuación, encontrará una serie de afirmaciones. Por favor indique con una X en el recuadro de la derecha, 
-            la respuesta que elija para cada una de las afirmaciones que se le presentan. No deje de contestar ninguna de ellas. 
-            Sus respuestas son confidenciales. Muchas gracias por su colaboración. 
-        </p>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 3)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(4, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
-            @for (int i = 0; i < patient.ResilenciaQuestionsText.Count; i++)
-            {
-                int index = i; // Local copy for lambda capture
-                if (index >= 0 && index < patient.ResilenciaQuestions.Count)
-                {
-                    <div class="m-2 p-2">
-                        <label>@patient.ResilenciaQuestionsText[index]</label>
-                        @foreach (var answer in patient.ResilenciaAnswers)
-                        {
-                            <div class="form-check">
-                                <InputRadioGroup @bind-Value="patient.ResilenciaQuestions[index].SelectedAnswer" class="form-check-input">
-                                    <InputRadio Value="@answer" class="form-check-input" /> @answer
-                                </InputRadioGroup>
-                            </div>
-                        }
-                    </div>
-                }
-            }
+            <p style="font-weight:bold">ESCALA DE MEDICIÓN DE LA RESILIENCIA CON MEXICANOS RESI-M </p>
+            <p>
+                Instrucciones: A continuación, encontrará una serie de afirmaciones. Por favor indique con una X en el recuadro de la derecha,
+                la respuesta que elija para cada una de las afirmaciones que se le presentan. No deje de contestar ninguna de ellas.
+                Sus respuestas son confidenciales. Muchas gracias por su colaboración.
+            </p>
         </div>
         <div class="custom-div">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Preguntas</th>
+                        @foreach (var answer in patient.ResilenciaAnswers)
+                        {
+                            <th>@answer</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < patient.ResilenciaQuestionsText.Count; i++)
+                    {
+                        int index = i; // Local copy for lambda capture
+                        if (index >= 0 && index < patient.ResilenciaQuestions.Count)
+                        {
+                            <tr>
+                                <td class="question-cell">@patient.ResilenciaQuestionsText[index]</td>
+                                <InputRadioGroup @bind-Value="patient.ResilenciaQuestions[index].SelectedAnswer">
+                                    @foreach (var answer in patient.ResilenciaAnswers)
+                                    {
+                                        <td class="answer-cell">
+                                            <InputRadio Value="@answer" class="form-check-input" />
+                                        </td>
+                                    }
+                                </InputRadioGroup>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="custom-div">
             <p>SECCIONES DE AFRONTAMIENTO Y APOYO SOCIAL DEL CUESTIONARIO DE AFRONTAMIENTO Y APOYO SOCIAL PARA ENFERMEDADES CRÓNICAS</p>
-            <p> 
+            <p>
                 El siguiente instrumento tiene la finalidad de saber cómo se sienten los pacientes que han tenido un trasplante y cómo afrontan las situaciones a las que se enfrentan y los tipos de apoyo que perciben.  Pedimos su ayuda para que responda las preguntas que cordialmente le presentamos, la información que nos proporcione será completa y estrictamente anónima, siendo rigurosamente utilizada para fines académicos y de investigación.
             </p>
             <p>SECCIÓN ESTRATEGIAS DE AFRONTAMIENTO</p>
             <p>Instrucciones: Se le leerán varias oraciones relacionadas con la forma como las personas afrontan los problemas de la vida.  Estas formas de afrontamiento no son buenas, ni malas, ni mejores, ni peores; dependen de las situaciones que se viven. En cada oración usted escogerá una de las 6 (seis) opciones que se le darán. Elija la que más se acomoda a su forma de ser y afrontar sus problemas. Las seis opciones son:... </p>
         </div>
         <div class="custom-div">
-            @for (int i = 0; i < patient.AfrontamientoQuestionsText.Count; i++)
-            {
-                int index = i; // Local copy for lambda capture
-                if (index >= 0 && index < patient.AfrontamientoQuestions.Count)
-                {
-                    <div class="m-2 p-2">
-                        <label>@patient.AfrontamientoQuestionsText[index]</label>
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Preguntas</th>
                         @foreach (var answer in patient.AfrontamientoAnswers)
                         {
-                            <div class="form-check">
-                                <InputRadioGroup @bind-Value="patient.AfrontamientoQuestions[index].SelectedAnswer" class="form-check-input">
-                                    <InputRadio Value="@answer" class="form-check-input" /> @answer
-                                    </InputRadioGroup>
-                            </div>
+                            <th>@answer</th>
                         }
-                    </div>
-                }
-            }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < patient.AfrontamientoQuestionsText.Count; i++)
+                    {
+                        int index = i; // Local copy for lambda capture
+                        if (index >= 0 && index < patient.AfrontamientoQuestions.Count)
+                        {
+                            <tr>
+                                <td class="question-cell">@patient.AfrontamientoQuestionsText[index]</td>
+                                <InputRadioGroup @bind-Value="patient.AfrontamientoQuestions[index].SelectedAnswer">
+                                    @foreach (var answer in patient.AfrontamientoAnswers)
+                                    {
+                                        <td class="answer-cell">
+                                            <InputRadio Value="@answer" class="form-check-input" />
+                                        </td>
+                                    }
+                                </InputRadioGroup>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 4)
-    {
+
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+	    <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 4)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(5, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>SECCIÓN APOYO SOCIAL</p>
             <p>
@@ -415,7 +510,7 @@ else
             </p>
         </div>
 
-         <div class="custom-div">
+        <div class="custom-div">
             <label for="s1" class="custom-label">1. Para su trasplante, ¿quién o quiénes le apoyaron económicamente?</label>
             <InputText id="s1" class="custom-input" @bind-Value="patient.QuienApoyoEcoPas" />
         </div>
@@ -502,306 +597,214 @@ else
         <div class="custom-div">
             <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió esos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
         </div>
+
         <div class="custom-div">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Negativo</th>
+                        @foreach (var answer in patient.SentimientosVals)
+                        {
+                            <th>@answer</th>
+                        }
+                        <th>Positivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="question-cell"> Triste </td>
+                            <InputRadioGroup @bind-Value="patient.Triste_ContentoPas">
+                                    @foreach (var element in patient.SentimientosVals)
+                                    {
+                                        <td class="answer-cell">
+                                            <InputRadio class="form-check-input" Value="@element" />
+                                        </td>
+                                    }
+                            </InputRadioGroup>
+                        <td class="question-cell"> Contento(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Triste  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Triste_ContentoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Inseguro(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Inseguro_SeguroPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Contento(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Seguro(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inseguro(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inseguro_SeguroPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Pesimista </td>
+                        <InputRadioGroup @bind-Value="patient.Pesimista_OptimistaPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Seguro(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Optimista  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Pesimista  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Pesimista_OptimistaPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desagradable </td>
+                        <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Optimista  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Agradable  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desagradable  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Inútil </td>
+                        <InputRadioGroup @bind-Value="patient.Inutil_ÚtilPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Agradable  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Útil  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inútil  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inutil_ÚtilPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Preocupado </td>
+                        <InputRadioGroup @bind-Value="patient.Preocupado_SinpreocupacionPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Útil  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Sin preocupación  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Preocupado  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Preocupado_SinpreocupacionPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Incómodo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Sin preocupación  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Cómodo(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incómodo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Incapaz </td>
+                        <InputRadioGroup @bind-Value="patient.Incapaz_CapazPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Cómodo(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Capaz </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incapaz  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incapaz_CapazPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Intranquilo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Capaz </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Tranquilo(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Intranquilo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Asustado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Asustado_RelajadoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Tranquilo(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Relajado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Asustado(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Incomprendido(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Relajado(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Comprendido(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incomprendido(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Infeliz </td>
+                        <InputRadioGroup @bind-Value="patient.Infeliz_FelizPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Comprendido(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Feliz </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Infeliz </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Infeliz_FelizPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Solo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Feliz </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Acompañado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Solo(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">   Sin amor </td>
+                        <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Acompañado(a) </label>
-                </div>
-            </div>
-
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Sin amor </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPas">
-                        <div class="radio-options">
-                            @foreach (var element in patient.SentimientosVals)
-                            {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
-                            }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Amado(a) </label>
-                </div>
-            </div>
-
+                        </InputRadioGroup>
+                        <td class="question-cell">Amado(a) </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 5)
-    {
+
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+	    <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 5)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(6, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>
                 A.S.M. Presente
@@ -892,305 +895,212 @@ else
             <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al momento que recibió estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.</p>
         </div>
         <div class="custom-div">
-
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Triste  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Triste_Contento">
-                        <div class="radio-options">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Negativo</th>
+                        @foreach (var answer in patient.SentimientosVals)
+                        {
+                            <th>@answer</th>
+                        }
+                        <th>Positivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="question-cell"> Triste </td>
+                        <InputRadioGroup @bind-Value="patient.Triste_Contento">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Contento(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Contento(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inseguro(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inseguro_Seguro">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Inseguro(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Inseguro_Seguro">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Seguro(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Seguro(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Pesimista  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Pesimista_Optimista">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Pesimista </td>
+                        <InputRadioGroup @bind-Value="patient.Pesimista_Optimista">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Optimista  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Optimista  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desagradable  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desagradable_Agradable">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desagradable </td>
+                        <InputRadioGroup @bind-Value="patient.Desagradable_Agradable">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Agradable  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Agradable  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inútil  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inutil_Útil">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Inútil </td>
+                        <InputRadioGroup @bind-Value="patient.Inutil_Útil">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Útil  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Útil  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Preocupado  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Preocupado_Sinpreocupacion">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Preocupado </td>
+                        <InputRadioGroup @bind-Value="patient.Preocupado_Sinpreocupacion">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Sin preocupación  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Sin preocupación  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incómodo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomodo_Comodo">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Incómodo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomodo_Comodo">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Cómodo(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Cómodo(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incapaz  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incapaz_Capaz">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Incapaz </td>
+                        <InputRadioGroup @bind-Value="patient.Incapaz_Capaz">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Capaz </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Capaz </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Intranquilo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Intranquilo_Tranquilo">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Intranquilo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Intranquilo_Tranquilo">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Tranquilo(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Tranquilo(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Asustado(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Asustado_Relajado">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Asustado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Asustado_Relajado">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Relajado(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Relajado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incomprendido(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomprendido_Comprendido">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Incomprendido(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomprendido_Comprendido">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Comprendido(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Comprendido(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Infeliz </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Infeliz_Feliz">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Infeliz </td>
+                        <InputRadioGroup @bind-Value="patient.Infeliz_Feliz">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Feliz </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Feliz </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Solo(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Solo_Acompanado">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Solo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Solo_Acompanado">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Acompañado(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Acompañado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Sin amor </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Sinamor_Amado">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">   Sin amor </td>
+                        <InputRadioGroup @bind-Value="patient.Sinamor_Amado">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Amado(a) </label>
-                </div>
-            </div>
-
+                        </InputRadioGroup>
+                        <td class="question-cell">Amado(a) </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 6)
-    {
+
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 6)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(7, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>
                 A.S.I. Pasado
@@ -1250,179 +1160,135 @@ else
             <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha</p>
         </div>
         <div class="custom-div">
-
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Mal informado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Malinformado_BieninformadoPas">
-                        <div class="radio-options">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Negativo</th>
+                        @foreach (var answer in patient.SentimientosVals)
+                        {
+                            <th>@answer</th>
+                        }
+                        <th>Positivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="question-cell"> Mal informado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Malinformado_BieninformadoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Bien informado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Bien informado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Intranquilo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Intranquilo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Tranquilo(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Tranquilo(a)</td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desinterés de los demás  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_InteresdelosdemasPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desinterés de los demás </td>
+                        <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_InteresdelosdemasPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Interés de los demás  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Interés de los demás  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Asustado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Asustado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Relajado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Relajado(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Enojado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Enojado_SerenoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Enojado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Enojado_SerenoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Sereno(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Sereno(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desmotivado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desmotivado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Motivado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Motivado(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Insatisfecho(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Insatisfecho_SatisfechoPas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Insatisfecho(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Insatisfecho_SatisfechoPas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Satisfecho(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Satisfecho(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inconforme  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inconforme_ConformePas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Inconforme </td>
+                        <InputRadioGroup @bind-Value="patient.Inconforme_ConformePas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Conforme </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Conforme </td>
+                    </tr>
 
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 7)
-    {
+
+    	<button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+	    <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 7)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(8, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>
                 A.S.I. Presente
@@ -1481,180 +1347,137 @@ else
         <div class="custom-div">
             <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  </p>
         </div>
+
         <div class="custom-div">
-
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Mal informado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Malinformado_Bieninformado">
-                        <div class="radio-options">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Negativo</th>
+                        @foreach (var answer in patient.SentimientosVals)
+                        {
+                            <th>@answer</th>
+                        }
+                        <th>Positivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="question-cell"> Mal informado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Malinformado_Bieninformado">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Bien informado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Bien informado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Intranquilo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfo">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Intranquilo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Intranquilo_TranquiloInfo">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Tranquilo(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Tranquilo(a)</td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desinterés de los demás  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_Interesdelosdemas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desinterés de los demás </td>
+                        <InputRadioGroup @bind-Value="patient.Desinteresdelosdemas_Interesdelosdemas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Interés de los demás  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Interés de los demás  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Asustado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfo">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Asustado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Asustado_RelajadoInfo">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Relajado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Relajado(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Enojado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Enojado_Sereno">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Enojado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Enojado_Sereno">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Sereno(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Sereno(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desmotivado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desmotivado_Motivado">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desmotivado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Desmotivado_Motivado">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Motivado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Motivado(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Insatisfecho(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Insatisfecho_Satisfecho">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Insatisfecho(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Insatisfecho_Satisfecho">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Satisfecho(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Satisfecho(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Inconforme  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Inconforme_Conforme">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Inconforme </td>
+                        <InputRadioGroup @bind-Value="patient.Inconforme_Conforme">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Conforme </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Conforme </td>
+                    </tr>
 
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 8)
-    {
+
+	    <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+	    <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 8)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(9, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>
                 A.S.E
@@ -1728,222 +1551,164 @@ else
         <div class="custom-div">
             <p>Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.  Instrucciones: Se le leerán una serie de palabras que representan sentimientos o sensaciones negativas y positivas. Indique cuál número de la escala numérica que se le presenta, se acerca a su sentir al recibir estos apoyos, teniendo en cuenta que el sentimiento negativo se encuentra del lado izquierdo de la escala y el sentimiento positivo a la derecha.   </p>
         </div>
+
         <div class="custom-div">
-
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desagradable  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePersonas">
-                        <div class="radio-options">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Negativo</th>
+                        @foreach (var answer in patient.SentimientosVals)
+                        {
+                            <th>@answer</th>
+                        }
+                        <th>Positivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="question-cell"> Desagradable </td>
+                        <InputRadioGroup @bind-Value="patient.Desagradable_AgradablePersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Agradable </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Agradable </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incómodo(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Incómodo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomodo_ComodoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Cómodo(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell">Cómodo(a)</td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Solo(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">Solo(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Solo_AcompanadoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Acompañado(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Acompañado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desmotivado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Desmotivado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Desmotivado_MotivadoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Motivado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Motivado(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Ignorado(a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Ignorado_EscuchadoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Ignorado(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Ignorado_EscuchadoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Escuchado(a)  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Escuchado(a)  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Sin amor  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell"> Sin amor </td>
+                        <InputRadioGroup @bind-Value="patient.Sinamor_AmadoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Amado  </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Amado  </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Incomprendido(a) </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Incomprendido(a) </td>
+                        <InputRadioGroup @bind-Value="patient.Incomprendido_ComprendidoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Comprendido(a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Comprendido(a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Infeliz  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Infeliz_FelizPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Infeliz </td>
+                        <InputRadioGroup @bind-Value="patient.Infeliz_FelizPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Feliz </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Feliz </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Desalentado (a)  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Desalentado_EsperanzadoPersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Desalentado (a) </td>
+                        <InputRadioGroup @bind-Value="patient.Desalentado_EsperanzadoPersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Esperanzado (a) </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Esperanzado (a) </td>
+                    </tr>
 
-            <div class="flex-container">
-                <div class="question-label">
-                    <label>  Frágil  </label>
-                </div>
-                <div class="flex-radio-group">
-                    <InputRadioGroup @bind-Value="patient.Fragil_FuertePersonas">
-                        <div class="radio-options">
+                    <tr>
+                        <td class="question-cell">  Frágil </td>
+                        <InputRadioGroup @bind-Value="patient.Fragil_FuertePersonas">
                             @foreach (var element in patient.SentimientosVals)
                             {
-                                <div class="form-check">
-                                    <InputRadio class="form-check-input" Value="@element" /> @element
-                                </div>
+                                <td class="answer-cell">
+                                    <InputRadio class="form-check-input" Value="@element" />
+                                </td>
                             }
-                        </div>
-                    </InputRadioGroup>
-                </div>
-                <div class="question-label">
-                    <label>  Fuerte </label>
-                </div>
-            </div>
+                        </InputRadioGroup>
+                        <td class="question-cell"> Fuerte </td>
+                    </tr>
 
+                </tbody>
+            </table>
         </div>
-    }
-    else if (currentSection == 9)
-    {
+
+
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection + 1, true)">Siguiente</button>
+    </EditForm>
+}
+else if (currentSection == 9)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="() => GoToSection(9, true)" FormName="editPatient">
+	    <DataAnnotationsValidator />
+	    <ValidationSummary />
         <div class="custom-div">
             <p>
                 DIMENSIÓN DE BIENESTAR DEL CUESTIONARIO DE SALUD SF-36
@@ -1976,55 +1741,35 @@ else
                 </ul>
             </InputRadioGroup>
         </div>
-    }
-    <button type="button" @onclick="() => GoToSection(-1)">Previous</button>
-    <button type="button" @onclick="() => GoToSection(1)">Next</button>
-    <button type="submit" class="btn btn-primary">@btntext</button>
-</EditForm>
+        <button type="button" class="btn btn-primary" @onclick="() => GoToSection(currentSection - 1, false)">Anterior</button>
+        <button type="button" class="btn btn-primary" @onclick="() => GuardarAvance()">Guardar</button>
+    </EditForm>
+}
 
-
+<button class="exit-button" @onclick="ExitPage">Regresar a la lista de pacientes</button>
 
 @code {
     [Parameter]
     public int? Id { get; set; }
     private int PatientId;
+    private EditContext? editContext;
 
     [SupplyParameterFromForm(FormName = "editPatient")]
-    public Entities.Patient patient { get; set; } = new Entities.Patient { NameEnc = string.Empty, Name = string.Empty, SurnameP = string.Empty, SurnameM = string.Empty };
+    public Entities.Patient patient { get; set; } = new Entities.Patient();
+
+
 
     string btntext = string.Empty;
 
     private int currentSection = 0;
-    async private void GoToSection(int section)
-    {
-        // You can add validation or save data logic here
-        int sectionval = currentSection + section;
-        if(sectionval<0)
-        {
-            sectionval = 0;
-        }
-        if(sectionval>9)
-        {
-            sectionval = 9;
-        }
-        currentSection = sectionval;
-        if (Id == null)
-        {
-            //await PatientService.AddPatient(patient);
-            await JSRuntime.InvokeVoidAsync("scrollToTop");
-        }
-        else
-        {
-            //await PatientService.UpdatePatient(patient);
-            await JSRuntime.InvokeVoidAsync("scrollToTop");
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
+        editContext = new EditContext(patient);
         if (Id != null)
         {
             patient = await PatientService.GetPatientbyId((int)Id);
+            editContext = new EditContext(patient);
             btntext = "Actualizar";
             PatientId = patient.Id;
         }
@@ -2056,20 +1801,6 @@ else
         }
     }
 
-    async Task HandleSubmit()
-    {
-        if (Id == null)
-        {
-            await PatientService.AddPatient(patient);
-            NavigationManager.NavigateTo("/patients");
-        }
-        else
-        {
-            await PatientService.UpdatePatient(patient);
-            NavigationManager.NavigateTo("/patients");
-        }
-    }
-
     private void SetSelectedAnswerResilencia(int questionIndex, string selectedAnswer)
     {
         patient.ResilenciaQuestions[questionIndex].SelectedAnswer = selectedAnswer;
@@ -2078,5 +1809,805 @@ else
     {
         patient.AfrontamientoQuestions[questionIndex].SelectedAnswer = selectedAnswer;
     }
+
+    private async Task GoToSection(int section, bool isMovingForward)
+    {
+        if (isMovingForward && !ValidateCurrentSection())
+        {
+            // If validation fails, do not move to the next section.
+            return;
+        }
+        ClearSectionValidationMessages();
+        StateHasChanged();
+        currentSection = section;
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+        // Save data if necessary. Here you might decide based on moving forward or backward.
+        if (Id == null)
+        {
+            await PatientService.AddPatient(patient);
+            Id = patient.Id;
+        }
+        else
+        {
+            await PatientService.UpdatePatient(patient);
+        }
+    }
     
+    private async Task GuardarAvance()
+    {
+        if (!ValidateCurrentSection())
+        {
+            // If validation fails, do not move to the next section.
+            return;
+        }
+        ClearSectionValidationMessages();
+        StateHasChanged();
+        // Save data if necessary. Here you might decide based on moving forward or backward.
+        if (Id == null)
+        {
+            await PatientService.AddPatient(patient);
+            Id = patient.Id;
+        }
+        else
+        {
+            await PatientService.UpdatePatient(patient);
+        }
+        NavigationManager.NavigateTo("/patients");
+    }
+
+    private void ExitPage()
+    {
+        NavigationManager.NavigateTo("/patients");
+    }
+
+    private bool ValidateCurrentSection()
+    {
+        bool isValid = true;
+        var messages = new ValidationMessageStore(editContext);
+
+        // Clear previous messages from the current section
+        messages.Clear();
+
+        // Assuming sections are divided logically, validate based on currentSection
+        switch (currentSection)
+        {
+            case 0: // Validating first section
+                if (patient.numcuestionario == null)
+                {
+                    messages.Add(editContext.Field("numcuestionario"), "Numero de cuestionario, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadeaplicacionDia == null)
+                {
+                    messages.Add(editContext.Field("fechadeaplicacionDia"), "fecha de aplicacion - Dia, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadeaplicacionMes == null)
+                {
+                    messages.Add(editContext.Field("fechadeaplicacionMes"), "fecha de aplicacion - Mes, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadeaplicacionAnio == null)
+                {
+                    messages.Add(editContext.Field("fechadeaplicacionAnio"), "fecha de aplicacion - Año, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Name))
+                {
+                    messages.Add(editContext.Field("Name"), "Nombre, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SurnameP))
+                {
+                    messages.Add(editContext.Field("SurnameP"), "Primer apellido, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.NameEnc))
+                {
+                    messages.Add(editContext.Field("NameEnc"), "Nombre encuestador, es requerido.");
+                    isValid = false;
+                }
+                if (patient.ECUNumber == null)
+                {
+                    messages.Add(editContext.Field("ECUNumber"), "ECU, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Phone1))
+                {
+                    messages.Add(editContext.Field("Phone1"), "EL primer numero de telefono, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Email1))
+                {
+                    messages.Add(editContext.Field("Email1"), "El primer correo, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadenacimientoDia == null)
+                {
+                    messages.Add(editContext.Field("fechadenacimientoDia"), "fecha de nacimiento - Dia, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadenacimientoMes == null)
+                {
+                    messages.Add(editContext.Field("fechadenacimientoMes"), "fecha de nacimiento - Mes, es requerido.");
+                    isValid = false;
+                }
+                if (patient.fechadenacimientoAnio == null)
+                {
+                    messages.Add(editContext.Field("fechadenacimientoAnio"), "fecha de nacimiento - Año, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.generoSeleccionado))
+                {
+                    messages.Add(editContext.Field("generoSeleccionado"), "El genero, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 1: // Validating second section
+                if (string.IsNullOrEmpty(patient.estadocivilSeleccionado))
+                {
+                    messages.Add(editContext.Field("estadocivilSeleccionado"), "El esatado civil, es requerido.");
+                    isValid = false;
+                }
+                if (patient.aniosdeestudio == null)
+                {
+                    messages.Add(editContext.Field("aniosdeestudio"), "Años de estudio - Dia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.religionSeleccionada))
+                {
+                    messages.Add(editContext.Field("religionSeleccionada"), "Religion, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ocupacionSeleccionada))
+                {
+                    messages.Add(editContext.Field("ocupacionSeleccionada"), "Ocupacion, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeNacimientoAlcaldia))
+                {
+                    messages.Add(editContext.Field("lugardeNacimientoAlcaldia"), "Alcaldia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeNacimientoMunicipio))
+                {
+                    messages.Add(editContext.Field("lugardeNacimientoMunicipio"), "Municipio, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeNacimientoEstado))
+                {
+                    messages.Add(editContext.Field("lugardeNacimientoEstado"), "Estado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeNacimientoPais))
+                {
+                    messages.Add(editContext.Field("lugardeNacimientoPais"), "Pais, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeResidenciaAlcaldia))
+                {
+                    messages.Add(editContext.Field("lugardeResidenciaAlcaldia"), "Alcaldia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeResidenciaMunicipio))
+                {
+                    messages.Add(editContext.Field("lugardeResidenciaMunicipio"), "Municipio, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.lugardeResidenciaEstado))
+                {
+                    messages.Add(editContext.Field("lugardeResidenciaEstado"), "Estado, es requerido.");
+                    isValid = false;
+                }
+                // Add more field validations for section 2 as needed
+                break;
+            case 2:
+                if (patient.personasEnCasa == null)
+                {
+                    messages.Add(editContext.Field("personasEnCasa"), "Personas en casa, es requerido.");
+                }
+                if (patient.personasAportanGastos == null)
+                {
+                    messages.Add(editContext.Field("personasAportanGastos"), "Aportan Gastos, es requerido.");
+                }
+                if (string.IsNullOrEmpty(patient.principalProveedorEconomico))
+                {
+                    messages.Add(editContext.Field("principalProveedorEconomico"), "Proveedor Economico, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.jefeJefaHogar))
+                {
+                    messages.Add(editContext.Field("jefeJefaHogar"), "jefe Jefa Hogar, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ingresoMensualHogar))
+                {
+                    messages.Add(editContext.Field("ingresoMensualHogar"), "ingreso Mensual Hogar, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.tipoDeCasa))
+                {
+                    messages.Add(editContext.Field("tipoDeCasa"), "Tipo De Casa, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.tipoDeTrasplante))
+                {
+                    messages.Add(editContext.Field("tipoDeTrasplante"), "Tipo De Trasplante, es requerido.");
+                    isValid = false;
+                }
+                if (patient.diaTrasplante == null)
+                {
+                    messages.Add(editContext.Field("diaTrasplante"), "¿En qué año se trasplantó? - Dia, es requerido.");
+                    isValid = false;
+                }
+                if (patient.mesTrasplante == null)
+                {
+                    messages.Add(editContext.Field("mesTrasplante"), "¿En qué año se trasplantó? - Mes, es requerido.");
+                    isValid = false;
+                }
+                if (patient.anioTrasplante == null)
+                {
+                    messages.Add(editContext.Field("anioTrasplante"), "¿En qué año se trasplantó? - Año, es requerido.");
+                    isValid = false;
+                }
+                if (patient.diaDiagnostico == null)
+                {
+                    messages.Add(editContext.Field("diaDiagnostico"), "¿En qué año fue diagnosticado con su enfermedad? - Dia, es requerido.");
+                    isValid = false;
+                }
+                if (patient.mesDiagnostico == null)
+                {
+                    messages.Add(editContext.Field("mesDiagnostico"), "¿En qué año fue diagnosticado con su enfermedad? - Mes, es requerido.");
+                    isValid = false;
+                }
+                if (patient.anioDiagnostico == null)
+                {
+                    messages.Add(editContext.Field("anioDiagnostico"), "¿En qué año fue diagnosticado con su enfermedad? - Año, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 3:
+                for (int i = 0; i < patient.ResilenciaQuestionsText.Count; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(patient.ResilenciaQuestions[i].SelectedAnswer))
+                    {
+                        isValid = false;
+                        messages.Add(editContext.Field("ResilenciaQuestions"), "Todas las opciones de Resilencia son requeridas.");
+                        break;
+                    }
+                }
+                for (int i = 0; i < patient.AfrontamientoQuestionsText.Count; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(patient.AfrontamientoQuestions[i].SelectedAnswer))
+                    {
+                        isValid = false;
+                        messages.Add(editContext.Field("AfrontamientoQuestions"), "Todas las opciones de Afrontamiento son requeridas.");
+                        break;
+                    }
+                }
+                break;
+            case 4:
+                if (string.IsNullOrEmpty(patient.QuienApoyoEcoPas))
+                {
+                    messages.Add(editContext.Field("QuienApoyoEcoPas"), "Quien Apoyo Economico, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoEcoPas))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoEcoPas"), "Quien Apoyo Economico Satsfaccion, pasado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoDomesticaPas))
+                {
+                    messages.Add(editContext.Field("QuienApoyoDomesticaPas"), "Quien Apoyo Domestico, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoDomesticaPas))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoDomesticaPas"), "Quien Apoyo Domestico Satsfaccion, pasado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoCitaPas))
+                {
+                    messages.Add(editContext.Field("QuienApoyoCitaPas"), "Quien Apoyo Citas, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoCitaPas))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCitaPas"), "Quien Apoyo Citas Satsfaccion, pasado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoPersonalPas))
+                {
+                    messages.Add(editContext.Field("QuienApoyoCitaPas"), "Quien Apoyo Personal, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoPersonalPas))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCitaPas"), "Quien Apoyo Citas Personal, pasado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.PedirPrestadoPas))
+                {
+                    messages.Add(editContext.Field("PedirPrestadoPas"), "frecuencia Pedir prestado, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.PedirPrestadoQuienPas))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCitaPas"), "Quien  Pedir prestado, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.PedirPrestadoTiempoPas))
+                {
+                    messages.Add(editContext.Field("PedirPrestadoTiempoPas"), "Tiempo total  Pedir prestado, pasado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.Triste_ContentoPas))
+                {
+                    messages.Add(editContext.Field("Triste_ContentoPas"), "Sentimiento 1, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inseguro_SeguroPas))
+                {
+                    messages.Add(editContext.Field("Inseguro_SeguroPas"), "Sentimiento 2, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Pesimista_OptimistaPas))
+                {
+                    messages.Add(editContext.Field("Pesimista_OptimistaPas"), "Sentimiento 3, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desagradable_AgradablePas))
+                {
+                    messages.Add(editContext.Field("Desagradable_AgradablePas"), "Sentimiento 4, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inutil_ÚtilPas))
+                {
+                    messages.Add(editContext.Field("Inutil_ÚtilPas"), "Sentimiento 5, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Preocupado_SinpreocupacionPas))
+                {
+                    messages.Add(editContext.Field("Preocupado_SinpreocupacionPas"), "Sentimiento 6, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomodo_ComodoPas))
+                {
+                    messages.Add(editContext.Field("Incomodo_ComodoPas"), "Sentimiento 7, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incapaz_CapazPas))
+                {
+                    messages.Add(editContext.Field("Incapaz_CapazPas"), "Sentimiento 8, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Intranquilo_TranquiloPas))
+                {
+                    messages.Add(editContext.Field("Intranquilo_TranquiloPas"), "Sentimiento 9, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Asustado_RelajadoPas))
+                {
+                    messages.Add(editContext.Field("Asustado_RelajadoPas"), "Sentimiento 10, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomprendido_ComprendidoPas))
+                {
+                    messages.Add(editContext.Field("Incomprendido_ComprendidoPas"), "Sentimiento 11, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Infeliz_FelizPas))
+                {
+                    messages.Add(editContext.Field("Infeliz_FelizPas"), "Sentimiento 12, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Solo_AcompanadoPas))
+                {
+                    messages.Add(editContext.Field("Solo_AcompanadoPas"), "Sentimiento 13, pasado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Sinamor_AmadoPas))
+                {
+                    messages.Add(editContext.Field("Sinamor_AmadoPas"), "Sentimiento 14, pasado, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 5:
+                if (string.IsNullOrEmpty(patient.QuienApoyoEco))
+                {
+                    messages.Add(editContext.Field("QuienApoyoEco"), "Quien Apoyo Economico, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoEco))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoEco"), "Quien Apoyo Economico Satsfaccion, ado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoDomestica))
+                {
+                    messages.Add(editContext.Field("QuienApoyoDomestica"), "Quien Apoyo Domestico, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoDomestica))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoDomestica"), "Quien Apoyo Domestico Satsfaccion, ado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoCita))
+                {
+                    messages.Add(editContext.Field("QuienApoyoCita"), "Quien Apoyo Citas, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoCita))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCita"), "Quien Apoyo Citas Satsfaccion, ado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienApoyoPersonal))
+                {
+                    messages.Add(editContext.Field("QuienApoyoCita"), "Quien Apoyo Personal, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SatisfacApoyoPersonal))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCita"), "Quien Apoyo Citas Personal, ado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.PedirPrestado))
+                {
+                    messages.Add(editContext.Field("PedirPrestado"), "frecuencia Pedir prestado, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.PedirPrestadoQuien))
+                {
+                    messages.Add(editContext.Field("SatisfacApoyoCita"), "Quien  Pedir prestado, ado, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.Triste_Contento))
+                {
+                    messages.Add(editContext.Field("Triste_Contento"), "Sentimiento 1, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inseguro_Seguro))
+                {
+                    messages.Add(editContext.Field("Inseguro_Seguro"), "Sentimiento 2, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Pesimista_Optimista))
+                {
+                    messages.Add(editContext.Field("Pesimista_Optimista"), "Sentimiento 3, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desagradable_Agradable))
+                {
+                    messages.Add(editContext.Field("Desagradable_Agradable"), "Sentimiento 4, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inutil_Útil))
+                {
+                    messages.Add(editContext.Field("Inutil_Útil"), "Sentimiento 5, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Preocupado_Sinpreocupacion))
+                {
+                    messages.Add(editContext.Field("Preocupado_Sinpreocupacion"), "Sentimiento 6, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomodo_Comodo))
+                {
+                    messages.Add(editContext.Field("Incomodo_Comodo"), "Sentimiento 7, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incapaz_Capaz))
+                {
+                    messages.Add(editContext.Field("Incapaz_Capaz"), "Sentimiento 8, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Intranquilo_Tranquilo))
+                {
+                    messages.Add(editContext.Field("Intranquilo_Tranquilo"), "Sentimiento 9, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Asustado_Relajado))
+                {
+                    messages.Add(editContext.Field("Asustado_Relajado"), "Sentimiento 10, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomprendido_Comprendido))
+                {
+                    messages.Add(editContext.Field("Incomprendido_Comprendido"), "Sentimiento 11, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Infeliz_Feliz))
+                {
+                    messages.Add(editContext.Field("Infeliz_Feliz"), "Sentimiento 12, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Solo_Acompanado))
+                {
+                    messages.Add(editContext.Field("Solo_Acompanado"), "Sentimiento 13, ado, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Sinamor_Amado))
+                {
+                    messages.Add(editContext.Field("Sinamor_Amado"), "Sentimiento 14, ado, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 6:
+                if (string.IsNullOrEmpty(patient.QuienInfoPas))
+                {
+                    messages.Add(editContext.Field("QuienInfoPas"), "Quien infiorma, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienFoletosArticulosRevistasPas))
+                {
+                    messages.Add(editContext.Field("QuienFoletosArticulosRevistasPas"), "Donde infiorma, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienConsejosPas))
+                {
+                    messages.Add(editContext.Field("QuienConsejosPas"), "Quien consejo, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ConsejoFrecPas))
+                {
+                    messages.Add(editContext.Field("ConsejoFrecPas"), "Quien consejo frecuencia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ConsultaControlPas))
+                {
+                    messages.Add(editContext.Field("ConsultaControlPas"), "Frecuencia control, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.TerapiasPsicologicaPas))
+                {
+                    messages.Add(editContext.Field("TerapiasPsicologicaPas"), "Frecuencia terapia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Malinformado_BieninformadoPas))
+                {
+                    messages.Add(editContext.Field("Malinformado_BieninformadoPas"), "Sentimiento 1, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Intranquilo_TranquiloInfoPas))
+                {
+                    messages.Add(editContext.Field("Intranquilo_TranquiloInfoPas"), "Sentimiento 2, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desinteresdelosdemas_InteresdelosdemasPas))
+                {
+                    messages.Add(editContext.Field("Desinteresdelosdemas_InteresdelosdemasPas"), "Sentimiento 3, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Asustado_RelajadoInfoPas))
+                {
+                    messages.Add(editContext.Field("Asustado_RelajadoInfoPas"), "Sentimiento 4, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Enojado_SerenoPas))
+                {
+                    messages.Add(editContext.Field("Enojado_SerenoPas"), "Sentimiento 5, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desmotivado_MotivadoPas))
+                {
+                    messages.Add(editContext.Field("Desmotivado_MotivadoPas"), "Sentimiento 6, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Insatisfecho_SatisfechoPas))
+                {
+                    messages.Add(editContext.Field("Insatisfecho_SatisfechoPas"), "Sentimiento 7, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inconforme_ConformePas))
+                {
+                    messages.Add(editContext.Field("Inconforme_ConformePas"), "Sentimiento 8, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 7:
+                if (string.IsNullOrEmpty(patient.QuienInfo))
+                {
+                    messages.Add(editContext.Field("QuienInfo"), "Quien infiorma, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienFoletosArticulosRevistas))
+                {
+                    messages.Add(editContext.Field("QuienFoletosArticulosRevistas"), "Donde infiorma, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienConsejos))
+                {
+                    messages.Add(editContext.Field("QuienConsejos"), "Quien consejo, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ConsejoFrec))
+                {
+                    messages.Add(editContext.Field("ConsejoFrec"), "Quien consejo frecuencia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.ConsultaControl))
+                {
+                    messages.Add(editContext.Field("ConsultaControl"), "Frecuencia control, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.TerapiasPsicologica))
+                {
+                    messages.Add(editContext.Field("TerapiasPsicologica"), "Frecuencia terapia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Malinformado_Bieninformado))
+                {
+                    messages.Add(editContext.Field("Malinformado_Bieninformado"), "Sentimiento 1, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Intranquilo_TranquiloInfo))
+                {
+                    messages.Add(editContext.Field("Intranquilo_TranquiloInfo"), "Sentimiento 2, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desinteresdelosdemas_Interesdelosdemas))
+                {
+                    messages.Add(editContext.Field("Desinteresdelosdemas_Interesdelosdemas"), "Sentimiento 3, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Asustado_RelajadoInfo))
+                {
+                    messages.Add(editContext.Field("Asustado_RelajadoInfo"), "Sentimiento 4, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Enojado_Sereno))
+                {
+                    messages.Add(editContext.Field("Enojado_Sereno"), "Sentimiento 5, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desmotivado_Motivado))
+                {
+                    messages.Add(editContext.Field("Desmotivado_Motivado"), "Sentimiento 6, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Insatisfecho_Satisfecho))
+                {
+                    messages.Add(editContext.Field("Insatisfecho_Satisfecho"), "Sentimiento 7, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Inconforme_Conforme))
+                {
+                    messages.Add(editContext.Field("Inconforme_Conforme"), "Sentimiento 8, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 8:
+                if (string.IsNullOrEmpty(patient.QuienPlatica))
+                {
+                    messages.Add(editContext.Field("QuienPlatica"), "Platica trasplante, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienPlaticaFrec))
+                {
+                    messages.Add(editContext.Field("QuienPlaticaFrec"), "Platica trasplante frecuencia, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienCarino))
+                {
+                    messages.Add(editContext.Field("QuienCarino"), "¿De quién o quiénes siente cariño?, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienCarinoFrec))
+                {
+                    messages.Add(editContext.Field("QuienCarinoFrec"), "¿De quién o quiénes siente cariño? frecuencia, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienInteres))
+                {
+                    messages.Add(editContext.Field("QuienInteres"), "¿De quién o quiénes siente interés por lo que está usted pasando?, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienInteresFrec))
+                {
+                    messages.Add(editContext.Field("QuienInteresFrec"), "¿De quién o quiénes siente interés por lo que está usted pasando? frecuencia, es requerido.");
+                    isValid = false;
+                }
+
+                if (string.IsNullOrEmpty(patient.QuienBurlaFrec))
+                {
+                    messages.Add(editContext.Field("QuienBurlaFrec"), "¿Ha sentido alguna vez la sensación de burla o ha sido mal visto por las personas debido a su trasplante?, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.QuienBurla))
+                {
+                    messages.Add(editContext.Field("QuienBurla"), "¿De quienes ha percibido estas sensaciones?, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desagradable_AgradablePersonas))
+                {
+                    messages.Add(editContext.Field("Desagradable_AgradablePersonas"), "Sentimiento 1, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomodo_ComodoPersonas))
+                {
+                    messages.Add(editContext.Field("Incomodo_ComodoPersonas"), "Sentimiento 2, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Solo_AcompanadoPersonas))
+                {
+                    messages.Add(editContext.Field("Solo_AcompanadoPersonas"), "Sentimiento 3, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desmotivado_MotivadoPersonas))
+                {
+                    messages.Add(editContext.Field("Desmotivado_MotivadoPersonas"), "Sentimiento 4, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Ignorado_EscuchadoPersonas))
+                {
+                    messages.Add(editContext.Field("Ignorado_EscuchadoPersonas"), "Sentimiento 5, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Sinamor_AmadoPersonas))
+                {
+                    messages.Add(editContext.Field("Sinamor_AmadoPersonas"), "Sentimiento 6, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Incomprendido_ComprendidoPersonas))
+                {
+                    messages.Add(editContext.Field("Incomprendido_ComprendidoPersonas"), "Sentimiento 7, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Infeliz_FelizPersonas))
+                {
+                    messages.Add(editContext.Field("Infeliz_FelizPersonas"), "Sentimiento 8, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Desalentado_EsperanzadoPersonas))
+                {
+                    messages.Add(editContext.Field("Desalentado_EsperanzadoPersonas"), "Sentimiento 9, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.Fragil_FuertePersonas))
+                {
+                    messages.Add(editContext.Field("Fragil_FuertePersonas"), "Sentimiento 10, es requerido.");
+                    isValid = false;
+                }
+                break;
+            case 9:
+                if (string.IsNullOrEmpty(patient.SaludEs))
+                {
+                    messages.Add(editContext.Field("SaludEs"), "Salud es, es requerido.");
+                    isValid = false;
+                }
+                if (string.IsNullOrEmpty(patient.SaludCom))
+                {
+                    messages.Add(editContext.Field("SaludCom"), "Salud comparada, es requerido.");
+                    isValid = false;
+                }
+                break;
+        }
+
+        // Update the EditContext to reflect the changes
+        editContext.NotifyValidationStateChanged();
+
+        return isValid;
+    }
+
+    private void ClearSectionValidationMessages()
+    {
+        editContext = new EditContext(patient);
+        var messageStore = new ValidationMessageStore(editContext);
+        messageStore.Clear(); // Clears all messages
+        editContext.NotifyValidationStateChanged();
+    }
 }
